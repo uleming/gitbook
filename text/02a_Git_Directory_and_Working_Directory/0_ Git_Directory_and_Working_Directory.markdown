@@ -1,34 +1,29 @@
-## Git Directory and Working Directory ##
+## Директория Git и Рабочая директория ##
 
-### The Git Directory ###
+### Директория Git ###
 
-The 'git directory' is the directory that stores all Git's history and meta
-information for your project - including all of the objects (commits, trees,
-blobs, tags), all of the pointers to where different branches are and more.
+'Директория git' это директория в которой хранится вся история Git и мета информация вашего проекта - включая все объекты (коммиты, деревья, блобы, таги), все указатели на различные ветви и многое другое.
 
-There is only one Git Directory per project (as opposed to one per
-subdirectory like with SVN or CVS), and that directory is (by default, though
-not necessarily) '.git' in the root of your project.  If you look at the
-contents of that directory, you can see all of your important files:
+На каждый проект имеется только одна Git директория (в отличие SVN или CVS, где она в каждой поддиректории), и это директория (по умолчанию но не обязадельно) '.git' в корне вашего проекта. Если вы посмотрите на содержимое этой директории то увидите все ваши важные файлы:
 
     $>tree -L 1
     .
-    |-- HEAD         # pointer to your current branch
-    |-- config       # your configuration preferences
-    |-- description  # description of your project 
+    |-- HEAD         # указатель на вашу активную ветку
+    |-- config       # ваши предпочтительные настройки
+    |-- description  # описание проекта
     |-- hooks/       # pre/post action hooks
-    |-- index        # index file (see next section)
-    |-- logs/        # a history of where your branches have been
-    |-- objects/     # your objects (commits, trees, blobs, tags)
-    `-- refs/        # pointers to your branches
+    |-- index        # индексный файл (смотрите в след.главе)
+    |-- logs/        # история ваших веток проекта (где они располагались)
+    |-- objects/     # ваши объекты (коммиты, деревья, блобы, таги)
+    `-- refs/        # указатели на ваши ветки разработки
 
-(there may be some other files/directories in there as well, but they are not important for now)
+(Также там могут быть и другие файлы/директории, но они не так важны в данный момент)
 
-### The Working Directory ###
+### Рабочая директория ###
 
-The Git 'working directory' is the directory that holds the current checkout 
-of the files you are working on.  Files in this directory are often removed
-or replaced by Git as you switch branches - this is normal.  All your history 
-is stored in the Git Directory; the working directory is simply a temporary 
-checkout place where you can modify the files until your next commit.
+'Рабочая директория' Git это директория которая содержит в себе активную выборку файлов, с которыми вы работаете в данный момент. Файлы в этой директории часто удаляются или изменяются Git когда вы переключаетесь между ветками - это нормально. Вся ваша история хранится в директории Git; рабочая директория это просто временная выборка, место где вы можете модифицировать файлы до следующего коммита.
+
+Замечания:
+не переведена строка 14
+checkout - переведено как выборка
 

@@ -1,51 +1,34 @@
-## Getting a Git Repository ##
+## Как получить Git репозиторий ##
 
-So now that we're all set up, we need a Git repository. We can do this one of
-two ways - we can *clone* one that already exists, or we can *initialize* one
-either from existing files that aren't in source control yet, or from an empty
-directory.
+Теперь когда Git уже установлен и сконфигурирован нам нужен Git репозиторий. Этого можно добиться двумя способами - мы можем *клонировать* существующий репозиторий, или мы можем *инициализировать* либо из существующих исходных файлов, которые еще не системе контроля версий, или из пустой директории.
 
-### Cloning a Repository ###
+### Клонирование репозитория ###
 
-In order to get a copy of a project, you will need to know the project's Git
-URL - the location of the repository. Git can operate over many different
-protocols, so it may begin with ssh://, http(s)://, git://, or just a username
-(in which case git will assume ssh). Some repositories may be accessed over
-more than one protocol. For example, the source code to Git itself can be
-cloned either over the git:// protocol:
+Для того чтобы получить копию проекта, вам нужно знать Git URL проекта - расположение проекта. Git может работать со многими различными протоколами, URL может начинаться с ssh://, http(s)://,git://, или с имени пользователя (в этом случае git предположит нужно использовать ssh). Некоторые репозитории могут быть доступны на нескольких протоколах. Для примера, исходный код самого Git может быть склонирован или через git:// протокол:
 
     git clone git://git.kernel.org/pub/scm/git/git.git
 
-or over http:
+или через http:
 
     git clone http://www.kernel.org/pub/scm/git/git.git
 
-The git:// protocol is faster and more efficient, but sometimes it is
-necessary to use http when behind corporate firewalls or what have you. In
-either case you should then have a new directory named 'git' that contains all
-the Git source code and history - it is basically a complete copy of what was
-on the server.
+Протокол git:// более быстрый и эффективный., но иногда необходимо использовать http, если вы позади корпоративного фаервола или персонального. В любом случае в итоге у вас появится директория с именем 'git' которая содержит весь исходный код Git и историю - по существу это полная копия того что есть на сервере.
 
-By default, Git will name the new directory it has checked out your cloned
-code into after whatever comes directly before the '.git' in the path of the
-cloned project. (ie. *git clone
-http://git.kernel.org/linux/kernel/git/torvalds/linux-2.6.git* will result in
-a new directory named 'linux-2.6')
+По умолчанию Git даст имя новой директории следующим образом. URL клонируемого репозитория заканчивается на '.git', все что идет до этого окончания будет использоваться как имя для новой директории. (т.е. *git clone
+http://git.kernel.org/linux/kernel/git/torvalds/linux-2.6.git* результат будет новая директория 'linux-2.6')
 
-### Initializing a New Repository ###
+### Инициализация нового репозитория ###
 
-Assume you have a tarball named project.tar.gz with your initial work. You can
-place it under git revision control as follows.
+Предположим у вас есть архив тарболл(tarball) с именем project.tar.gz где исходники вашего проекта. Вы можете поместить проект в git след. образом:
 
-    $ tar xzf project.tar.gz
-    $ cd project
-    $ git init
+    $ tar xzf project.tar.gz    #распаковать проект
+    $ cd project				#перейти в директорию проекта
+    $ git init					#инициализировать git для проекта
 
-Git will reply
+Вы увидите вывод команды Git
 
     Initialized empty Git repository in .git/
 
-You've now initialized the working directory--you may notice a new
-directory created, named ".git".
+Теперь у вас есть проинициализированная рабочая директория -- вы возможно заметили что появилась новая директория ".git".
 
 [gitcast:c1_init](GitCast #1 - setup, init and cloning)

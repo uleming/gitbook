@@ -1,13 +1,12 @@
 ## Rebasing ##
 
-Suppose that you create a branch "mywork" on a remote-tracking branch
-"origin".
+Предположим вы создаете ветку "mywork" на удаленной-отслеживаемой ветке "origin".
 
     $ git checkout -b mywork origin
 
 [fig:rebase0]
 
-Now you do some work, creating two new commits.
+Терерь вы проделываете некоторую работу, создающую два новых коммита.
 
     $ vi file.txt
     $ git commit
@@ -15,53 +14,39 @@ Now you do some work, creating two new commits.
     $ git commit
     ...
     
-Meanwhile, someone else does some work creating two new commits on the origin
-branch too. This means both 'origin' and 'mywork' has advanced, which means 
-the work has diverged.
+Тем временем, некто еще проделываает некоторую работу создающую два новых коммита в ветке origin. Это означает обе 'origin' и 'mywork' продивинулись вперед, что означает что ветки отклонились друг от друга.
 
 [fig:rebase1]
 
-At this point, you could use "pull" to merge your changes back in;
-the result would create a new merge commit, like this:
+В этот момент, вы можете выполнить "pull" чтобы слить ваши изменения обратно, результат создаст новый слитый коммит, след. образом:
 
 [fig:rebase2]
 
-However, if you prefer to keep the history in mywork a simple series of
-commits without any merges, you may instead choose to use
+Тем не менее, если вы предпочитаете держить историю в mywork простую серию коммитов без каких либо слияний, вы можете вместо этого использовать
 linkgit:git-rebase[1]:
 
     $ git checkout mywork
     $ git rebase origin
 
-This will remove each of your commits from mywork, temporarily saving
-them as patches (in a directory named ".git/rebase"), update mywork to
-point at the latest version of origin, then apply each of the saved
-patches to the new mywork.  
+Это удалит каждый ваш коммит из mywork, временно сохранив  их как патчи (в директории под именем ".git/rebase"), и обновит mywork до точки в послденней версии origin, затеи применит каждый сохраненный ранее патч с новому mywork.  
 
 [fig:rebase3]
 
-Once the ref ('mywork') is updated to point to the newly created commit 
-objects, your older commits will be abandoned.  They will likely be
-removed if you run a pruning garbage collection. (see linkgit:git-gc[1])
+Как только ссылка ('mywork') обновлена и указывает на новые созданные коммит объекты, ваши ранние коммиты будут отменены. Они будут скорее всего удалены если вы выполните сборку мусора. (просмотрите linkgit:git-gc[1])
 
 [fig:rebase4]
 
-So now we can look at the difference in our history between running a merge
-and running a rebase:
+Таким образом мы теперь можем взглянуть на разницу в вашей истории между выполнением rebase и merge:
 
 [fig:rebase5]
 
-In the process of the rebase, it may discover conflicts.  In that case it will stop
-and allow you to fix the conflicts; after fixing conflicts, use "git-add"
-to update the index with those contents, and then, instead of
-running git-commit, just run
+В процессе rebase, возможно обнаружатся конфликты. В этом случае он остановится и позволит вам устранить конфликты; после чего, выполните "git-add" чтобы обновить директорию заморозки этоиго содержимого, и затем, вместо выполнения git-commit, просто запустите
 
     $ git rebase --continue
 
-and git will continue applying the rest of the patches.
+и git продолжит налагать оставшиеся патчи.
 
-At any point you may use the `--abort` option to abort this process and
-return mywork to the state it had before you started the rebase:
+В любой момент вы можете использовать параметр `--abort` чтобы оборвать это процесс и вернуть mywork к тому состоянию в котором она была до того как вы начали процесс rebase:
 
     $ git rebase --abort
 

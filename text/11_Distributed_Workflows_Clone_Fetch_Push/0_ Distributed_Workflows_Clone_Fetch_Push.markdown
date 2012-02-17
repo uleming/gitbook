@@ -1,144 +1,98 @@
-## Distributed Workflows ##
+## Распределенный рабочий процесс ##
 
-Suppose that Alice has started a new project with a git repository in
-/home/alice/project, and that Bob, who has a home directory on the
-same machine, wants to contribute.
+Предположим что Алиса начала новый проект с git репозиторием в директории /home/alice/project, и что Боб, у которого есть своя домашняя директории на той же машине, хочеть помочь с проектом.
 
-Bob begins with:
+Боб начнет работу с:
 
     $ git clone /home/alice/project myrepo
 
-This creates a new directory "myrepo" containing a clone of Alice's
-repository.  The clone is on an equal footing with the original
-project, possessing its own copy of the original project's history.
+Это создаст новую директорию "myrepo" содержащую копию репозитория Алисы.
+Клон эквивалентен в основании оригиналу проекта, и обладает своей копией истории оригинального проекта.
 
-Bob then makes some changes and commits them:
+Затем Боб вносит некоторые изменения и выполняет коммит:
 
 
     (edit files)
     $ git commit -a
     (repeat as necessary)
 
-When he's ready, he tells Alice to pull changes from the repository
-at /home/bob/myrepo.  She does this with:
+Когда он готов, он сообщает Алисе вытянуть изменения из репозитория в  /home/bob/myrepo.  Она совершает это выполнив:
 
     $ cd /home/alice/project
     $ git pull /home/bob/myrepo master
 
-This merges the changes from Bob's "master" branch into Alice's
-current branch.  If Alice has made her own changes in the meantime,
-then she may need to manually fix any conflicts.  (Note that the
-"master" argument in the above command is actually unnecessary, as it
-is the default.)
+Это сливает изменения из ветки "master" Боба в активную ветку Алисы. Если Алиса внесла изменения в свою ветку в тоже самое время, тогда возможно ей придется вручную исправить конфликты если таковые появятся. (Заметьте аргумент "master" в команде выше в действительности не требуется, так как он будет использоваться по умолчанию.)
 
-The "pull" command thus performs two operations: it fetches changes
-from a remote branch, then merges them into the current branch.
+Команда "pull" таким образом выполняет два действия: она вытягивает изменения из удаленного репозитория, и сливает их в активную ветку.
 
-When you are working in a small closely knit group, it is not
-unusual to interact with the same repository over and over
-again.  By defining 'remote' repository shorthand, you can make
-it easier:
+Когда вы работаете в маленькой группе разработчиков, это обыкновенная практика работать с одим и тем же репозиторием снова и снова. Определив сокращение 'remore' репозитория вы можете упростить себе работу:
 
     $ git remote add bob /home/bob/myrepo
 
-With this, Alice can perform the first operation alone using the
-"git fetch" command without merging them with her own branch,
-using:
+С этим Алиса, может выполнять первую операцию одной командой "git fetch" без сливания их в свою ветку:
 
     $ git fetch bob
 
-Unlike the longhand form, when Alice fetches from Bob using a
-remote repository shorthand set up with `git remote`, what was
-fetched is stored in a remote tracking branch, in this case
-`bob/master`.  So after this:
+В отличие от полной формы, когда Алиса вытягивает изменения из 'remote' репозитория Боба используя сокращение с помощью `git remote`, то что было вытянуто хранится в удаленной отслеживающей ветке, в нашем случае это
+`bob/master`.  Так после этого:
 
     $ git log -p master..bob/master
 
-shows a list of all the changes that Bob made since he branched from
-Alice's master branch.
+покажет список всех изменений которые Боб сделал с того времени как он ответвился от ветки "master" Алисы.
 
-After examining those changes, Alice
-could merge the changes into her master branch:
+После проверки этих изменений, Алиса может слить изменения в свою ветку master:
 
     $ git merge bob/master
 
-This `merge` can also be done by 'pulling from her own remote
-tracking branch', like this:
+Этот `merge` может также быть выполнено с помощью 'вытягивания из ее собственной удаленной отслеживаемой ветки', слею.образом:
 
     $ git pull . remotes/bob/master
 
-Note that git pull always merges into the current branch,
-regardless of what else is given on the command line.
+Заметьте что команда git pull всегда сливает в активную ветку, не обращая внимания на другие аргументы в командной строке.
 
-Later, Bob can update his repo with Alice's latest changes using
+Позже Боб, может обновить свой репозиторий включив последние обновления Алисы, выполнив
 
     $ git pull
 
-Note that he doesn't need to give the path to Alice's repository;
-when Bob cloned Alice's repository, git stored the location of her
-repository in the repository configuration, and that location is
-used for pulls:
+Заметьте что ему не требуется указывать путь к репозиторию Алисы; когда Боб клонирует репозиторий Алисы, git хранит местоположение ее репозитория в настройках репозитория, и это расположние используется для извлечения:
 
     $ git config --get remote.origin.url
     /home/alice/project
 
-(The complete configuration created by git-clone is visible using
-"git config -l", and the linkgit:git-config[1] man page
-explains the meaning of each option.)
+(Полные настойки созданы командой git-clone. Их можно просмотреть с помощью "git config -l", страница справочника linkgit:git-config[1] описывает значения каждого параметра.)
 
-Git also keeps a pristine copy of Alice's master branch under the
-name "origin/master":
+Git также держит чистую копию ветки "master" Алисы под именем "origin/master":
 
     $ git branch -r
       origin/master
 
-If Bob later decides to work from a different host, he can still
-perform clones and pulls using the ssh protocol:
+Ecли Боб позже решит работать с другой машины, он все еще может выполнить клонирование и вытянуть данные используя ssh протокол:
 
     $ git clone alice.org:/home/alice/project myrepo
 
-Alternatively, git has a native protocol, or can use rsync or http;
-see linkgit:git-pull[1] for details.
+Кроме того, у git есть свой родной протокол, или можно использовать rsync или http; просмотрите linkgit:git-pull[1] чтобы получить больше подробностей.
 
-Git can also be used in a CVS-like mode, with a central repository
-that various users push changes to; see linkgit:git-push[1] and
-linkgit:gitcvs-migration[1].
+Git может также быть использован в режиме CVS, центрального репозитория в который различные пользователи добавляют изменения; просмотрите linkgit:git-push[1] и linkgit:gitcvs-migration[1].
 
 
-### Public git repositories ###
+### Открытые git репозитории ###
 
-Another way to submit changes to a project is to tell the maintainer
-of that project to pull the changes from your repository using
-linkgit:git-pull[1].  This is a way to get
-updates from the "main" repository, but it works just as well in the
-other direction.
+Другой путь передать изменения в проект это попросить мантейнера проекта вытянуть изменения из вашего репозитория используя linkgit:git-pull[1]. Это способ получить обновления из "main" репозитория, но он работает также хорошо в другом направлении..
 
-If you and the maintainer both have accounts on the same machine, then
-you can just pull changes from each other's repositories directly;
-commands that accept repository URLs as arguments will also accept a
-local directory name:
+Если вы и мантейнер оба имеет учетную запись на одной машине, тогда вы можете просто вытянуть изменения друг от друга репозириев напрямую; команды которые допускают URLы репозиторией как аргумент также допускают имя локальной директории:
 
     $ git clone /path/to/repository
     $ git pull /path/to/other/repository
 
-or an ssh URL:
+или ssh URL:
 
     $ git clone ssh://yourhost/~you/repository
 
-For projects with few developers, or for synchronizing a few private
-repositories, this may be all you need.
+Для проектов с малым количеством разработчиков, или для синхронизации нескольких частных репозиториев, это именно то что вам нужно.
 
-However, the more common way to do this is to maintain a separate public
-repository (usually on a different host) for others to pull changes
-from.  This is usually more convenient, and allows you to cleanly
-separate private work in progress from publicly visible work.
+Как бы так ни было, более общий способ сделать это открыть отдельный общественный репозиторий (обычно на отдельной машине) для других из которого они могли вытягивать изменения. Обычно это более удобный способ, и позволяет вам очистить отдельную частную работу от отщественной видимой работы.
 
-You will continue to do your day-to-day work in your personal
-repository, but periodically "push" changes from your personal
-repository into your public repository, allowing other developers to
-pull from that repository.  So the flow of changes, in a situation
-where there is one other developer with a public repository, looks
-like this:
+Вы продолжите делать вашу повседневную работу в вашем личном репозитории, но периодически будете вытягивать изменения из вашего личного репозитория в ваш общественный репозиторий, позволяя другим разработчикам вытигивать из этого репозитория. Так поток изменений, в ситуации где есть один разработчик с общественным репозиторием, выглядит так:
 
                             you push
       your personal repo ------------------> your public repo
@@ -152,82 +106,65 @@ like this:
       
 
 
-### Pushing changes to a public repository ###
+### Внесение изменений в общественный репозиторий ###
 
-Note that exporting via http or git allow other
-maintainers to fetch your latest changes, but they do not allow write
-access.  For this, you will need to update the public repository with the
-latest changes created in your private repository.
+Заметьте что экспорт через http или git позволяет другим мантейнерам получать ваши изменения, но у них нет доступа на запись. Для этого вам нужно обновить общественный репозиторий и включить туда последние обновления созданные в вашем частном репозитории.
 
-The simplest way to do this is using linkgit:git-push[1] and ssh; to
-update the remote branch named "master" with the latest state of your
-branch named "master", run
+Простейший способ сделать это - использовать linkgit:git-push[1] и ssh; чтобы обновить удаленную ветку по имени "master" с последним состоянием вашей ветки под именем "master", выполните
 
     $ git push ssh://yourserver.com/~you/proj.git master:master
 
-or just
+или просто
 
     $ git push ssh://yourserver.com/~you/proj.git master
 
-As with git-fetch, git-push will complain if this does not result in a
-fast forward; see the following section for details on
-handling this case.
+Как и git-fetch, git-push будет жаловаться если это не результат fast forward; просмотрите след.секцию для подробностей как решить эту проблему.
 
-Note that the target of a "push" is normally a bare repository.  You can also push to a
-repository that has a checked-out working tree, but the working tree
-will not be updated by the push.  This may lead to unexpected results if
-the branch you push to is the currently checked-out branch!
+Заметьте что цель "push" обычно пустой репозиторий. Вы также можете выполнить push в репозиторий который имеет извлеченное рабочее дерево, но рабочее дерево не обновится выполнением push. Этот способ ведет к неопределенным результатам если ветка в которую вы выполняете push активная извлеченная ветка!
 
-As with git-fetch, you may also set up configuration options to
-save typing; so, for example, after
+Также как и с git-fetch, вы возможно также установите параметры конфигурации для безопасной печати; так например после
 
     $ cat >>.git/config <<EOF
     [remote "public-repo"]
     	url = ssh://yourserver.com/~you/proj.git
     EOF
 
-you should be able to perform the above push with just
+вы должны быть способны выполнить push выше след.образом
 
     $ git push public-repo master
 
-See the explanations of the remote.<name>.url, branch.<name>.remote,
-and remote.<name>.push options in linkgit:git-config[1] for
-details.
+Просмотрите объяснение remote.<name>.url, branch.<name>.remote,
+and remote.<name>.push параметры в linkgit:git-config[1] для получения подробностей.
 
-### What to do when a push fails ###
+### Что делать если выполнение push провалилось ###
 
-If a push would not result in a fast forward of the
-remote branch, then it will fail with an error like:
+Если выполнение push не закончится fast forward удаленной ветки, то ошибка будет выглядеть как:
 
     error: remote 'refs/heads/master' is not an ancestor of
     local  'refs/heads/master'.
     Maybe you are not up-to-date and need to pull first?
     error: failed to push to 'ssh://yourserver.com/~you/proj.git'
 
-This can happen, for example, if you:
+Это может случиться, например если вы:
 
-	- use `git-reset --hard` to remove already-published commits, or
-	- use `git-commit --amend` to replace already-published commits, or
-	- use `git-rebase` to rebase any already-published commits.
+	- использовали `git-reset --hard` чтобы удалить уже опубликованные коммиты или
+	- использовали `git-commit --amend` чтобы заменить уже опубликованные коммиты или
+	- использовали `git-rebase` чтобы переопределить любой уже опубликованный коммиты.
 
-You may force git-push to perform the update anyway by preceding the
-branch name with a plus sign:
+Вы также можете заставить git-push выполнить обновление в любом случае если перед именем ветки поставите символ плюс:
 
     $ git push ssh://yourserver.com/~you/proj.git +master
 
-Normally whenever a branch head in a public repository is modified, it
-is modified to point to a descendant of the commit that it pointed to
-before.  By forcing a push in this situation, you break that convention.
+Обычно всякий раз когда голова ветки в общественном репозитории модифицируется, оно модифицируется так чтобы указывать на потомка коммита на который оно указывало до этого. Принуждая выполнение push в такой ситуации, вы нарушаете это соглашение.
 
-Nevertheless, this is a common practice for people that need a simple
-way to publish a work-in-progress patch series, and it is an acceptable
-compromise as long as you warn other developers that this is how you
-intend to manage the branch.
+Тем не мене, это общая практика для людей которым нужен простой способ опубликовать серию патчей работа в прогрессе, и это допустимый компромис пока другие разработчики предупреждены каким образом вы намереваетесь управлять веткой.
 
-It's also possible for a push to fail in this way when other people have
-the right to push to the same repository.  In that case, the correct
-solution is to retry the push after first updating your work: either by a
-pull, or by a fetch followed by a rebase; see the next section and
-linkgit:gitcvs-migration[7] for more.
+Это также возможно что выполнение push ну удастся этим способом когда другие разработчики имеют права на выполнение push  в тот же репозиторий. В этом случае правильное решение это повторить push после первого обновления вашей работы или выполнив pull или выполнив fetch с последующим rebase.; Просмотрите след. секцию и linkgit:gitcvs-migration[7] для больших деталей.
 
 [gitcast:c8-dist-workflow]("GitCast #8: Distributed Workflow")
+
+
+Примечание
+The clone is on an equal footing with the original
+project, possessing its own copy of the original project's history.
+Перевод этого предложения не думаю что правильный

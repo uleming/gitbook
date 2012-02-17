@@ -1,51 +1,34 @@
-## Welcome to Git ##
+## Добро пожаловать в Git ##
 
-Welcome to Git - the fast, distributed version control system.
+Добро пожаловать в Git. Git это быстрая, распределенная система контроля версий.
 
-This book is meant to be a starting point for people new to Git to learn it 
-as quickly and easily as possible.
+Эта книга предназначена для новичков в Git. Она послужит стартовой точкой для вас, и поможет легко и быстро изучить Git.
 
 
-This book will start out by introducing you to the way Git stores data, to 
-give you the context for why it is different than other VCS tools.
-This is meant to take you about 20 minutes.
+Начало этой книги описывает, как Git хранит свои данные. Это поможет вам понять почему Git так отличается от других систем контроля версий. Эта глава займет у вас около 20 минут.
 
-Next we will cover **Basic Git Usage** - the commands you will be using 90% of 
-the time.  These should give you a good basis to use Git comfortably for most
-of what you're going to use it for.  This section should take you about 30 
-minutes to read through.
+Затем мы расскажем  про **Базовое использование Git** - команды которыми вы будете пользоватьthe 90% времени.
+Эта глава даст вам достаточно хорошую базу, чтобы уверенно пользоваться Git. В большинстве случаев этого будет вполне достаточно.
+На прочтение этой главы вам понадобится около 30 минут.
 
-Next we will go over **Intermediate Git Usage** - things that are slightly more
-complex, but may replace some of the basic commands you learned in the first 
-section.  This will mostly be tricks and commands that will feel more 
-comfortable after you know the basic commands.
+Следующая глава **Средний уровень использования Git ** - здесь вещи более сложные, и возможно подменяют некоторые простые команды которые вы изучили в первой главе. В большинстве случаев это технические приемы и команды которые сделают вашу работу с Git более удобной. Это удобство вы почуствуете в особенности после регулярного использования базовых команд.
 
-After you have all of that mastered, we will cover **Advanced Git** - commands
-that most people probably don't use very often, but can be very helpful in
-certain situations.  Learning these commands should round out your day-to-day
-git knowledge; you will be a master of the Git!
+После того как вы одолели предыдущие главы, мы приступим к главе **Продвинутый Git**. В этой главе вы изучите команды которые большинство пользователей не часто используют, но они могут быть очень полезными в определенных ситуациях. После изучения этой главы ваши знания Git покроют все необходимое в повседневной практике; теперь вы мастер Git!
 
-Now that you know Git, we will then cover **Working with Git**.  Here we will go
-over how to use Git in scripts, with deployment tools, with editors and more.
-These sections are meant to help you integrate Git into your environment.
+Теперь когда вы уже знаете Git, мы приступим к главе **Работа с Git**.  Здесь мы пройдемся по тому как встроить Git в скрипты, инстументы развертывания приложений, с редакторами и т.д. Эта глава главным образом предназначена для того чтобы помочь вам интегрировать Git в ваше рабочее окружение.
 
-Lastly, we will have a series of articles on **low-level documentation** that may
-help the Git hackers who want to learn how the actual internals and protocols
-work in Git.
+В самом конце, вы можете прочитать серию статей о **низко-уровневая документация** которая возможно поможет энтузиастам Git, кто хочет изучить внутреннее устройство и протоколы Git.
 
-### Feedback and Contributing ###
+### Отзывы и Сотрудничество ###
 
-At any point, if you see a mistake or want to contribute to the book, you can 
-send me an email at [schacon@gmail.com](mailto:schacon@gmail.com), or you
-can clone the source of this book at 
+Если вы вдруг заметите ошибку или захотите помочь с книгой, вы можете отправить мне сообщение на мой эл.почту [schacon@gmail.com](mailto:schacon@gmail.com), или вы можете склонировать исходный код этой книги с 
 [http://github.com/schacon/gitbook](http://github.com/schacon/gitbook)
-and send me a patch or a pull-request.
+и прислать мне патч или отправить pull-request.
 
-### References ###
+### Ссылки ###
 
-Much of this book is pulled together from different sources and then added to.  
-If you would like to read some of the original articles or resources, please
-visit them and thank the authors:
+Большая часть материала для этой книги собрана из различных источников.  
+Если вы хотите прочитать оригинальные статьи или источники, то проследуйте по ссыдкам далее и поблагодарите их авторов:
 
 * [Git User Manual](http://www.kernel.org/pub/software/scm/git/docs/user-manual.html)
 * [The Git Tutorial](http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html)

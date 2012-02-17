@@ -1,6 +1,6 @@
 ## Interactive Rebasing ##
 
-You can also rebase interactively.  This is often used to re-write your
+Вы также можете выполнять rebase интерактивно. Это часто используется чтобы переписать ваши объкеты коммит перед как выполнить их push This is often used to re-write your
 own commit objects before pusing them somewhere.  It is an easy way to 
 split, merge or re-order commits before sharing them with others.  You
 can also use it to clean up commits you've pulled from someone when

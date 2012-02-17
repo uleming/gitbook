@@ -1,8 +1,6 @@
 ### Windows ###
 
-On Windows, installing Git is pretty easy.  Simply download and install the
-[msysGit](http://code.google.com/p/msysgit/downloads/list) package.
+На Windows, установить Git очень легко. Просто скачайте и установите [msysGit](http://code.google.com/p/msysgit/downloads/list) инсталятор.
 
-See the *Git on Windows* chapter for a screencast demonstrating installing
-and using Git on Windows.
+Просмотрите главу *Git на Windows* где есть скринкаст демонстрирующий установку и использование Git на Windows.
 

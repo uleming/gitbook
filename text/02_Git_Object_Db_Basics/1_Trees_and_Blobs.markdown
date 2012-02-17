@@ -1,11 +1,11 @@
-### Blob Object ###
+### Объект блоб ###
 
-A blob generally stores the contents of a file.
+Блоб обычно хранит содержимое файла.
 
 [fig:object-blob]
 
-You can use linkgit:git-show[1] to examine the contents of any blob. 
-Assuming we have the SHA for a blob, we can examine its contents like this:
+Вы можете использовать linkgit:git-show[1] чтобы исследовать содержимое блоба. 
+Предположим у нас есть SHA значение блоба, таким образом чтобы исследовать его содержимое нужно выполнить:
 
     $ git show 6ff87c4664
 
@@ -14,25 +14,17 @@ Assuming we have the SHA for a blob, we can examine its contents like this:
      v2.2 or v3.x or whatever), unless explicitly otherwise stated.
     ...
 
-A "blob" object is nothing but a chunk of binary data.  It doesn't refer
-to anything else or have attributes of any kind, not even a file name.
+Объект "blob" это всего лишь некороторая порция бинарных данных. Он ни на что не ссылается у него нет каких либо атрибутов, даже имени файла тоже нет.
 
-Since the blob is entirely defined by its data, if two files in a
-directory tree (or in multiple different versions of the repository)
-have the same contents, they will share the same blob object. The object
-is totally independent of its location in the directory tree, and
-renaming a file does not change the object that file is associated with.
+Поскольку блоб полностью определен его собственным содержимым, если два файла в директории или даже в разных версиях репозитория имеют одинаковое содержимое, они будут разделять один и тот же блоб объект. Объект полностью независит от его расположения в дереве каталогов, и переименование файла не изменит объект с которым этом файл связан.
 
-### Tree Object ###
+### Объект дерево ###
 
-A tree is a simple object that has a bunch of pointers to blobs and other
-trees - it generally represents the contents of a directory or subdirectory.
+Дерево это простой объект который заключает в себе группу указателей на блобы и другие деревья - обычно представляет содержимое директорий или поддиректорий.
 
 [fig:object-tree]
 
-The ever-versatile linkgit:git-show[1] command can also be used to
-examine tree objects, but linkgit:git-ls-tree[1] will give you more
-details.  Assuming we have the SHA for a tree, we can examine it like this:
+Более универсальная команда linkgit:git-show[1] может быть также использована чтобы исследовать дерево объектов, но linkgit:git-ls-tree[1] даст вам больше подробностей.  Предположим у нас есть SHA значение дерева, тогда мы можем исследовать его следующим образом:
 
     $ git ls-tree fb3a8bdd0ce
     100644 blob 63c918c667fa005ff12ad89437f2fdc80926e21c    .gitignore
@@ -45,21 +37,14 @@ details.  Assuming we have the SHA for a tree, we can examine it like this:
     100644 blob 548142c327a6790ff8821d67c2ee1eff7a656b52    README
     ...
 
-As you can see, a tree object contains a list of entries, each with a
-mode, object type, SHA1 name, and name, sorted by name.  It represents
-the contents of a single directory tree.
+Как вы можете видеть, объект дерево содержит список записей, каждая записть состоит из вида, типа объекта, SHA1 значения, и имени соответственно. Записи отсортированы по имени. Так выглядит содержимое одной директории дерева.
 
-An object referenced by a tree may be blob, representing the contents of a
-file, or another tree, representing the contents of a subdirectory.  Since
-trees and blobs, like all other objects, are named by the SHA1 hash of their
-contents, two trees have the same SHA1 name if and only if their contents
-(including, recursively, the contents of all subdirectories) are identical.
-This allows git to quickly determine the differences between two related tree
-objects, since it can ignore any entries with identical object names.
+Ссылка на объект в дереве может быть как блобом (файлом по сути) так и деревом (поддиректорией). Поскольку имена всех объектов, деревьев и блобов, совпадает с SHA хэш-значением их содержимого, то SHA значения двух деревьев будут идентичны только если их содержимое (включая, рекурсивно, содержимое всех поддиректорий) идентично.
+
+Это свойство позволяет git быстро найти отличия между двумя родственными объектами типа дерево, так как git может игнорировать объекты с одинаковыми именами.
 
 (Note: in the presence of submodules, trees may also have commits as
 entries.  See the **Submodules** section.)
 
-Note that the files all have mode 644 or 755: git actually only pays
-attention to the executable bit.
+Заметьте что все файлы имеют права 644 или 755: в действительности git обращает внимание права исполнения.
 

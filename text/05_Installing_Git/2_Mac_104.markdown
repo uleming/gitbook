@@ -1,6 +1,6 @@
 ### Mac 10.4 ###
 
-In both Mac 10.4 and 10.5, you can install Git via [MacPorts](http://www.macports.org/), 
+На обоих  Mac 10.4 and 10.5, вы можете установить Git через [MacPorts](http://www.macports.org/), 
 if you have that installed.  If not, you can install it from [here](http://www.macports.org/install.php).
 
 Once MacPorts is installed, all you should have to do is:

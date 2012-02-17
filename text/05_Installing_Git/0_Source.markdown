@@ -1,14 +1,13 @@
-### Installing from Source ###
+### Установка из исходников ###
 
-In short, on a Unix-based system, you can download the Git source code from the
-[Git Download Page](http://git-scm.com/download), and then run something
-along the lines of :
+Коротко на Unix системах, вы можете скачать исходный код Git со страницы закачки [Git Download Page](http://git-scm.com/download), и затем выполнить следующие команды:
 
-    $ make prefix=/usr all ;# as yourself
-    $ make prefix=/usr install ;# as root
+    $ make prefix=/usr all ;# от своего имени
+    $ make prefix=/usr install ;# как суперпользователь (root)
 
-You will need the [expat](http://expat.sourceforge.net/), 
-[curl](http://curl.linux-mirror.org),
-[zlib](http://www.zlib.net), and [openssl](http://www.openssl.org) libraries
-installed - though with the possible exception of *expat*, these will normally already
-be there.
+Вам потребуются следующие библиотеки:
+[expat](http://expat.sourceforge.net/)
+[curl](http://curl.linux-mirror.org)
+[zlib](http://www.zlib.net)
+[openssl](http://www.openssl.org)
+хотя за возможным исключением *expat*, они уже будут в системе.

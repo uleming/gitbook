@@ -1,53 +1,41 @@
-## Git Tag ##
+## Таги Git ##
 
-### Lightweight Tags ###
+### Легковесные Таги ###
 
-We can create a tag to refer to a particular commit by running linkgit:git-tag[1]
-with no arguments.
+Мы можем создавать таг чтобы ссылаться на определенный коммит выполняя linkgit:git-tag[1] без каких-либо аргументов.
 
     $ git tag stable-1 1b2e1d63ff
     
-After that, we can use stable-1 to refer to the commit 1b2e1d63ff.
+После этого, мы можем использовать stable-1 чтобы ссылаться на коммит 1b2e1d63ff.
 
-This creates a "lightweight" tag, basically a branch that never moves.
-If you would also like to include a comment with the tag,
-and possibly sign it cryptographically, then we can create a *tag object* instead.
+Это создает легковесный таг, обычно это ветка которая никогда не двигается. Если вам хочется включить коментарий в таг, а также возможно вставить криптографическую подпись, тогда ты можем создать "таг объект*.
 
-### Tag Objects ###
+### Таговые объекты ###
 
-If one of **-a**, **-s**, or **-u <key-id>** is passed, the command creates a tag object, 
-and requires the tag message. Unless -m <msg> or -F <file> is given, an editor 
-is started for the user to type in the tag message.
+Если один из параметров **-a**, **-s**, или **-u <key-id>** передан вовнутрь, то эта комманда создает таговый объект, и требует сообщение-описание тага. Если только не переданы параметры -m <msg> или -F <file>, то запускается редактор для пользователя чтобы он мог ввести сообщение-описание тага.
 
-When this happens, a new object is added to the Git object database and the 
-tag ref points to that _tag object_, rather than the commit itself. The strength
-of this is that you can sign the tag, so you can verify that it is the correct
-commit later.  You can create a tag object like this:
+Когда это происходит, новый объект добавляется в базу данных объектов Git и таговая ссылка указывает на этот _tag object_, лучше чем сам коммит. Мощь этого то что вы можете подписать таг, так что вы можете проверить позже что это правильный коммит. Вы можете создать таговый объект след.образом:
 
     $ git tag -a stable-1 1b2e1d63ff
     
-It is actually possible to tag any object, but tagging commit objects is the 
-most common. (In the Linux kernel source, the first tag object
-references a tree, rather than a commit)
+Вообще в действительности возможно поставить таг на любой объект, но таггинг объектов коммит более общий. (В исходниках ядра Linux, первый таговый объект ссылается на дерево, the first tag object
+references a tree, ранее чем на коммит)
 
-### Signed Tags ###
+### Подписанные таги ###
 
-If you have a GPG key setup, you can create signed tags fairly easily.  First,
-you will probably want to setup your key id in your _.git/config_ or _~.gitconfig_
-file.
+Если у вас есть установленный GPG ключ, вы можете создать подписанный таг легко. Первое, вы будете возможно хотеть установить ваш id ключа в вашу _.git/config_ или _~.gitconfig_ файл.
 
     [user]
         signingkey = <gpg-key-id>
         
-You can also set that with
+Вы также можете установить это выполнив
 
     $ git config (--global) user.signingkey <gpg-key-id>
     
-Now you can create a signed tag simply by replacing the **-a** with a **-s**.
+Теперь вы можете создать подписанный таг просто заменив **-a** на **-s**.
 
     $ git tag -s stable-1 1b2e1d63ff
     
-If you don't have your GPG key in your config file, you can accomplish the same
-thing this way:
+Если у вас нет ключа GPG в вашем конфигурационном файле, вы можете выполнить то же самое след.путем:
     
     $ git tag -u <gpg-key-id> stable-1 1b2e1d63ff

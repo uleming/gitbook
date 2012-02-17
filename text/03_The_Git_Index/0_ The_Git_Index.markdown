@@ -1,16 +1,11 @@
-## The Git Index ##
+## Индекс Git ##
 
-The Git index is used as a staging area between your working directory 
-and your repository.  You can use the index to build up a set of changes
-that you want to commit together.  When you create a commit, what is committed
-is what is currently in the index, not what is in your working directory.
+Индекс Git - это что то вроде промежуточной директории между вашей рабочей директорией и репозиторием. Можно назвать ее как директория заморозки кода.
+Для примера вы сделали какие то изменения/исправления кода и вам вдруг захотелось поэкспериментировать с кодом но вы не хотите коммитить эти эксперименты позже. В этом случае перед тем как начать экспериментировать вы можете переместить исправленный код в директорию заморозки. Когда вы будете позже коммитить, то в репозиторий переместится только код из директории заморозки, а эксперименты останутся в рабочей директории и вы можете удалить или перенести их в новую ветку.
 
 ### Looking at the Index ###
 
-The easiest way to see what is in the index is with the linkgit:git-status[1]
-command.  When you run git status, you can see which files are staged
-(currently in your index), which are modified but not yet staged, and which
-are completely untracked.
+Самый быстрый способ увидеть что включает в себя директория заморозки можно с помощью команды linkgit:git-status[1]. Когда вы выполняете команду git status, то увидите какие файлы заморожены (в данный момент заморожены), какие модифицированы но не заморожены, и какие еще неотслеживаемые Git (неотслеживаемые это те которые еще не были добавлены в объекты Git, например новые файлы только созданные).
 
     $>git status
     # On branch master
@@ -34,11 +29,10 @@ are completely untracked.
     #	blametree-init
     #	git-gui/git-citool
 
-If you blow the index away entirely, you generally haven't lost any
-information as long as you have the name of the tree that it described.
+Если вы удалили полностью содержимое директории заморозки, в общем вы не потеряли никакой информации поскольку у вас есть еще имя дерева которое ее описывает.
 
-And with that, you should have a pretty good understanding of the basics of 
-what Git is doing behind the scenes, and why it is a bit different than most
-other SCM systems.  Don't worry if you don't totally understand it all right 
-now; we'll revisit all of these topics in the next sections. Now we're ready 
-to move on to installing, configuring and using Git.  
+Теперь вы достаточно хорошо должны понимать основы того, что Git делает за сценой, и чем он отличается от других систем контроля версий. Не волнуйтесь если вы не полностью поняли прочитанный материал; мы вернемся к этим темам в следующих главах. Теперь вы готовы приступить к установке, конфигурированию, и использованию Git.
+
+Замечания:
+stagging area - переведено как директория заморозки кода. 
+непереведено все еще ссылка на вторую секцию

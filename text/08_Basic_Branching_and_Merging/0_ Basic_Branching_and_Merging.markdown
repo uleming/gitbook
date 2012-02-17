@@ -1,88 +1,74 @@
-## Basic Branching and Merging ##
+## Управление ветвлением и слиянием ##
 
-A single git repository can maintain multiple branches of
-development.  To create a new branch named "experimental", use
+Один git репозиторий может заключать в себе множество ветвей разработки. Чтобы создать новое ответвление с именем "experimental", выполните команду
 
     $ git branch experimental
 
-If you now run
+Теперь если вы выполните
 
     $ git branch
 
-you'll get a list of all existing branches:
+то получите список всех существующих ветвей:
 
       experimental
     * master
 
-The "experimental" branch is the one you just created, and the
-"master" branch is a default branch that was created for you
-automatically.  The asterisk marks the branch you are currently on;
-type
+Ветка "experimental" это та что вы только что создали а ветка "master" это ветка по умолчанию которая создается автоматически. Звездочка указывает в какой ветке вы в данный момент;
+наберите
 
     $ git checkout experimental
 
-to switch to the experimental branch.  Now edit a file, commit the
-change, and switch back to the master branch:
+чтобы переключиться в ветку experimental. Теперь отредактируйте файл, выполните комит, и переключитесь обратно в главную ветку "master":
 
     (edit file)
     $ git commit -a
     $ git checkout master
 
-Check that the change you made is no longer visible, since it was
-made on the experimental branch and you're back on the master branch.
+Убедитесь что сделанные изменения невидимы, поскольку они были сделаны в ветке experimental а вы сейчас в главной ветке "master".
 
-You can make a different change on the master branch:
+Вы можете сделать разные изменения в ветке "master", затем закоммить их:
 
     (edit file)
     $ git commit -a
 
-at this point the two branches have diverged, with different changes
-made in each.  To merge the changes made in experimental into master, run
+на этом этапе две ветки разошлись, поскольку в каждой из них различные изменения. Чтобы включить изменения в ветке experimental в master, выполните
 
     $ git merge experimental
 
-If the changes don't conflict, you're done.  If there are conflicts,
-markers will be left in the problematic files showing the conflict;
+Если изменения не конфликтуют, то вы закончили. Если же существуют какие либо конфликты, то проблемных файлах останутся заметки которые можно увидеть выполнив;
 
     $ git diff
 
-will show this.  Once you've edited the files to resolve the
-conflicts,
+Как только вы отредактировали файлы вызывающие конфликты выполните,
 
     $ git commit -a
 
-will commit the result of the merge. Finally,
+это выполнит коммит результат слияния. В заключении,
 
     $ gitk
 
-will show a nice graphical representation of the resulting history.
+покажет нагладное графическое представление истории.
 
-At this point you could delete the experimental branch with
+Теперь вы можете удалить ветку experimental командой
 
     $ git branch -d experimental
 
-This command ensures that the changes in the experimental branch are
-already in the current branch.
+Эта команда гарантирует что изменения в ветке experimental уже в текущей активной ветке.
 
-If you develop on a branch crazy-idea, then regret it, you can always
-delete the branch with
+Если вы отрабатываете в ветке сумашедшие идеи, и уже пожалели об этой ветке, вы всегла можете удалить ветку выполнив
 
     $ git branch -D crazy-idea
 
-Branches are cheap and easy, so this is a good way to try something
-out.
+Ветки это легко и просто, и это хороший способ попробовать что то новое.
 
-### How to merge ###
+### Как сливать ветки ###
 
-You can rejoin two diverging branches of development using
+Вы можете объединить две разошедшиеся ветки разработки используя
 linkgit:git-merge[1]:
 
     $ git merge branchname
 
-merges the changes made in the branch "branchname" into the current
-branch.  If there are conflicts--for example, if the same file is
-modified in two different ways in the remote branch and the local
-branch--then you are warned; the output may look something like this:
+сливает изменения сделанные в ветке "branchname" в активную(рабочую) ветку.  Если присутствуют конфликты -- например один и тот же файл модифицирован разными способами в удаленной и локальной веткях -- то вы будете предупреждены; вывод будет выглядеть как то так:
 
     $ git merge next
      100% (4/4) done
@@ -90,30 +76,20 @@ branch--then you are warned; the output may look something like this:
     CONFLICT (content): Merge conflict in file.txt
     Automatic merge failed; fix conflicts and then commit the result.
 
-Conflict markers are left in the problematic files, and after
-you resolve the conflicts manually, you can update the index
-with the contents and run git commit, as you normally would when
-modifying a file.
+Заметки конфликтов останутся в проблемных файлах, и после того как вы исправите их вручную, вы можете перенести в содержимое директории заморозки и выполнить git commit, как вы обычно это делаете когда изменяете файл.
 
-If you examine the resulting commit using gitk, you will see that it
-has two parents: one pointing to the top of the current branch, and
-one to the top of the other branch.
+Если вы исследуете результирующий коммит используя gitk, вы увидите что у него два родителя: один указывает на верх активной ветки, а другой на верх другой ветки.
 
-### Resolving a merge ###
+### Исправление слияния ###
 
-When a merge isn't resolved automatically, git leaves the index and
-the working tree in a special state that gives you all the
-information you need to help resolve the merge.
+Когда слияние не происходит автоматически, git оставляет директорию заморозки и рабочее дерево в особом состоянии которое дает вам всю информацию необходимую чтобы разрешить конфликт.
 
-Files with conflicts are marked specially in the index, so until you
-resolve the problem and update the index, linkgit:git-commit[1] will
-fail:
+Файлы с конфликтами отмечаются в директории заморозки особым образом, так что до тех пор пока вы не исправите проблему и не обновите директорию заморозки, команда linkgit:git-commit[1] не будет работать:
 
     $ git commit
     file.txt: needs merge
 
-Also, linkgit:git-status[1] will list those files as "unmerged", and the
-files with conflicts will have conflict markers added, like this:
+Также, linkgit:git-status[1] перечислит те файлы как "unmerged", и файлы с конфликтами будут выглядеть след.образом:
 
     <<<<<<< HEAD:file.txt
     Hello world
@@ -121,44 +97,31 @@ files with conflicts will have conflict markers added, like this:
     Goodbye
     >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086:file.txt
 
-All you need to do is edit the files to resolve the conflicts, and then
+Все что вам нужно это отредактировать файлы чтобы исправить конфликты, а затем выполнить
 
     $ git add file.txt
     $ git commit
 
-Note that the commit message will already be filled in for you with
-some information about the merge.  Normally you can just use this
-default message unchanged, but you may add additional commentary of
-your own if desired.
+Заметьте что сообщение-описание коммита уже будет содержить некоторую информацию о слиянии. Обычно вы можете оставить это сообщение-описпние неизмененным, но вы можете добавить свои дополнительные комментарии, если пожелаете.
 
-The above is all you need to know to resolve a simple merge.  But git
-also provides more information to help resolve conflicts:
+Теперь вы знаете все что вам нужно чтобы выполнить простое слияние. Но git также обеспечивает больше информации чтобы исправлять конфликты:
 
-### Undoing a merge ###
+### Отменить слияние ###
 
-If you get stuck and decide to just give up and throw the whole mess
-away, you can always return to the pre-merge state with
+Если в процессе слияния и исправления конфликтов,вы застряли и решили сдаться и выбросить все к черту, то вы всегда можете вернуться с состоянию pre-merge (такое же как и было до того как вы запустили слияние) выполнив
 
     $ git reset --hard HEAD
 
-Or, if you've already committed the merge that you want to throw away,
+Если вы уже выполнили коммит после слияния, и вы хотите сбросить это,
 
     $ git reset --hard ORIG_HEAD
 
-However, this last command can be dangerous in some cases--never throw away a
-commit if that commit may itself have been merged into another branch, as
-doing so may confuse further merges.
+Как бы там ни было, последняя команда может быть опасной в некоторых случаях --никогда не сбрасывайте коммит если этот коммит возможно использован в слиянии в другую ветку, если вы это сделаете то это запутает последующие слияния.
 
 ### Fast-forward merges ###
 
-There is one special case not mentioned above, which is treated differently.
-Normally, a merge results in a merge commit with two parents, one for each of
-the two lines of development that were merged.
+Есть один специальный случай не упомянутый выше, с которым обходится следует по другому. Обычно, результаты слияния идут впоследствии в коммит у которого два родителя, один на каждую ветку разработки.
 
-However, if the current branch has not diverged from the other--so every
-commit present in the current branch is already contained in the other--then
-git just performs a "fast forward"; the head of the current branch is moved
-forward to point at the head of the merged-in branch, without any new commits
-being created.
+Как бы там ни был если активная ветка не отклонилась от другой -- так что каждый коммит в представленной активной ветке уже содержится в другой -- тогда git просто выполняет "fast forward"; верхушка активной ветки перемещается вреред на место верхушки сливаемой ветки, без создания каких-либо новых коммитов.
 
 [gitcast:c6-branch-merge]("GitCast #6: Branching and Merging")

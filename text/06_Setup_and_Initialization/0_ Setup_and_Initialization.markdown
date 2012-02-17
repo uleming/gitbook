@@ -1,2 +1,2 @@
-## Setup and Initialization ##
+## Установка и Инициализация ##
 
