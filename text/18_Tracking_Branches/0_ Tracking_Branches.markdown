@@ -1,28 +1,20 @@
-## Tracking Branches ##
+## Отслеживаемая ветка ##
 
-A 'tracking branch' in Git is a local branch that is connected to a remote
-branch.  When you push and pull on that branch, it automatically pushes and
-pulls to the remote branch that it is connected with.
+'Отслеживаемая ветка' в Git это локальная ветка которая соединена с удаленной веткой. Когда вы выполняете push в этой ветке, это то автоматически выполняет push и pull для удаленной ветки с которой она соединена.
 
-Use this if you always pull from the same upstream branch into the new 
-branch, and if you don't want to use "git pull <repository> <refspec>" 
-explicitly.
+Используйте это если вы всегда выполняете pull из той же главной ветки в новую ветку, и елси вы не хотите явно использовать "git pull <repository> <refspec>".
 
-The 'git clone' command automatically sets up a 'master' branch that is
-a tracking branch for 'origin/master' - the master branch on the cloned
-repository.
+Команда 'git clone' автоматически устанавливает ветку 'master' которая отслеживатемая ветка для 'origin/master' - ветка master в клонируемом репозитории.
 	
-You can create a tracking branch manually by adding the '--track' option
-to the 'branch' command in Git. 
+Вы можете создавать отслеживаемые ветки вручную добавляя параметр '--track' к команде 'branch' в Git. 
 
 	git branch --track experimental origin/experimental
 
-Then when you run:
+Затем когда вы выполните:
 
 	$ git pull experimental
 	
-It will automatically fetch from 'origin' and merge 'origin/experimental' 
-into your local 'experimental' branch.
+Это автоматически вытянет из ветки 'origin' и сольет 'origin/experimental' 
+с вашей локальной веткой 'experimental' branch.
 
-Likewise, when you push to origin, it will push what your 'experimental' points to
-to origins 'experimental', without having to specify it.
+Подобно этому, когда вы выполните push в origin, то это выполнит push на который ваша ветка 'experimental' указывает к ветке origins ветки 'experimental', без обязательного определения ее.

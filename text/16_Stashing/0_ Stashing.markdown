@@ -1,35 +1,26 @@
 ## Stashing ##
 
-While you are in the middle of working on something complicated, you
-find an unrelated but obvious and trivial bug.  You would like to fix it
-before continuing.  You can use linkgit:git-stash[1] to save the current
-state of your work, and after fixing the bug (or, optionally after doing
-so on a different branch and then coming back), unstash the
-work-in-progress changes.
+Во время вы посреди работы на чем то сложным вы нашли очевидный простой баг который не относится к той работе которую вы в данный момент проделываете. Вам бы хотелось его исправить перед тем как продолжить свою работу. Вы можете использовать linkgit:git-stash[1] чтобы сохранить текущее состояние вашей работы, и позже после того как исправите баг (или опционально после делаввания этого на другой ветке и потом возвращения назад), выполнить, unstash изменения рабоытв прогрессе.
 
     $ git stash save "work in progress for foo feature"
 
-This command will save your changes away to the `stash`, and
-reset your working tree and the index to match the tip of your
-current branch.  Then you can make your fix as usual.
+Эта команда сохранит ваши изменения в `stash`, и сбросиб вашу рабочее дерево и директорию заморозки на совпадающее с кончиком вашей текущей ветки. Затем вы можете приступить к исправлению как обычно.
 
     ... edit and test ...
     $ git commit -a -m "blorpl: typofix"
 
-After that, you can go back to what you were working on with
-`git stash apply`:
+После чего, вы можете вернуться над чем вы работали с `git stash apply`:
 
     $ git stash apply
 
 
 ### Stash Queue ###
 
-You can also use stashing to queue up stashed changes.  
-If you run 'git stash list' you can see which stashes you have saved:
+Вы также можете испльзовать stashing чтобы создвать очереди stashштп изменений.  
+Если вы выполняете 'git stash list' вы можете увидеть которые stash вы сохранили:
 
 	$>git stash list
 	stash@{0}: WIP on book: 51bea1d... fixed images
 	stash@{1}: WIP on master: 9705ae6... changed the browse code to the official repo
 
-Then you can apply them individually with 'git stash apply stash@{1}'.  You
-can clear out the list with 'git stash clear'.
+Затем вы можете приложить их индивидуально с помощью 'git stash apply stash@{1}'. Вы можете очистить список выполнив 'git stash clear'.

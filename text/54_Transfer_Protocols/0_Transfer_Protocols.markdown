@@ -1,41 +1,29 @@
-## Transfer Protocols ##
+## Протокол передачи ##
 
-Here we will go over how clients and servers talk to each other to 
-transfer Git data around.
+Здесь мы пройдемя по тому как клиенты и серверы говорят друг с другом чтобы обмениваться данными Git между собой.
 
-### Fetching Data over HTTP ###
+### Извлечение данных через HTTP ###
 
-Fetching over an http/s URL will make Git use a slightly dumber protocol.
-In this case, all of the logic is entirely on the client side.  The server
-requires no special setup - any static webserver will work fine if the
-git directory you are fetching from is in the webserver path.
+Извлечение через http/s URL заставит Git использовать немного глупый протокол. В этом случае, вся логика ложится на сторону клиента. Сервер не требует специальной настройки - любой статический вебсервер подойдет для этой работы если директори git которую вы извлекает доступна вебсерверу.
 
-In order for this to work, you do need to run a single command on the 
-server repo everytime anything is updated, though - linkgit:git-update-server-info[0],
-which updates the objects/info/packs and info/refs files to list which refs
-and packfiles are available, since you can't do a listing over http.  When
-that command is run, the objects/info/packs file looks something like this:
+Чтобы это работало, вам нужно выполнять единственную команду на репозитории сервера каждый раз если что то обновилось, команда выглядит след.образом linkgit:git-update-server-info[0], которая обновляет файлы objects/info/packs и info/refs чтобы составить список какие refa и пакфайлы досупны, так как вы не можете изменить список через http. Когда эта команда выполняется, файл objects/info/packs выглядит приблизительно след.образом:
 
 	P pack-ce2bd34abc3d8ebc5922dc81b2e1f30bf17c10cc.pack
 	P pack-7ad5f5d05f5e20025898c95296fe4b9c861246d8.pack
 
-So that if the fetch can't find a loose file, it can try these packfiles.  The
-info/refs file will look something like this:
+Так что если извлечение не может найти открытый файл, то оно может попробовать эти пайфайлы. Файл info/refs приблизительно будет выглядеть след.образом:
 
 	184063c9b594f8968d61a686b2f6052779551613	refs/heads/development
 	32aae7aef7a412d62192f710f2130302997ec883	refs/heads/master
 
-Then when you fetch from this repo, it will start with these refs and walk the
-commit objects until the client has all the objects that it needs. 
+Потом когда вы извлекаете из этого репозитория, то процесс начнет с этих refs и пройдет объекты коммит до тех пор пока клиет не получит все объекты которые ему нужны.
 
-For instance, if you ask to fetch the master branch, it will see that master is
-pointing to <code>32aae7ae</code> and that your master is pointing to <code>ab04d88</code>,
-so you need <code>32aae7ae</code>.  You fetch that object 
+Например, если вы попросите извлечь ветку master, то это увидит что master указывает на <code>32aae7ae</code> а ваша msater указывает на <code>ab04d88</code>, так что вам нужно <code>32aae7ae</code>. Вы извлекаете этот объект
 
 	CONNECT http://myserver.com
 	GET /git/myproject.git/objects/32/aae7aef7a412d62192f710f2130302997ec883 - 200
 	
-and it looks like this:
+И это выглядит след.образом:
 
 	tree aa176fb83a47d00386be237b450fb9dfb5be251a
 	parent bd71cad2d597d0f1827d4a3f67bb96a646f02889
@@ -44,29 +32,27 @@ and it looks like this:
 
 	added chapters on private repo setup, scm migration, raw git
 
-So now it fetches the tree <code>aa176fb8</code>:
+Теперь это извлекает дерево <code>aa176fb8</code>:
 
 	GET /git/myproject.git/objects/aa/176fb83a47d00386be237b450fb9dfb5be251a - 200
 
-which looks like this:
+которе выглядет след.образом:
 
 	100644 blob 6ff87c4664981e4397625791c8ea3bbb5f2279a3	COPYING
 	100644 blob 97b51a6d3685b093cfb345c9e79516e5099a13fb	README
 	100644 blob 9d1b23b8660817e4a74006f15fae86e2a508c573	Rakefile
 
-So then it fetches those objects:
+И теперь это извлекает эти объекты:
 
 	GET /git/myproject.git/objects/6f/f87c4664981e4397625791c8ea3bbb5f2279a3 - 200
 	GET /git/myproject.git/objects/97/b51a6d3685b093cfb345c9e79516e5099a13fb - 200
 	GET /git/myproject.git/objects/9d/1b23b8660817e4a74006f15fae86e2a508c573 - 200
 
-It actually does this with Curl, and can open up multiple parallel threads to 
-speed up this process.  When it's done recursing the tree pointed to by the 
-commit, it fetches the next parent.
+В действителности это происходит с помощью Curl, и может открываться множество паралельных потоков чтобы ускорить процесс. Когда он заканчивает рекурсию дерева указанног коммитом, оно извлекает следующего родителя..
 	
 	GET /git/myproject.git/objects/bd/71cad2d597d0f1827d4a3f67bb96a646f02889 - 200
 
-Now in this case, the commit that comes back looks like this:
+Теперь в этом случае, коммит который вернулся выглядет след.образом:
 
 	tree b4cc00cf8546edd4fcf29defc3aec14de53e6cf8
 	parent ab04d884140f7b0cf8bbf86d6883869f16a46f65
@@ -75,53 +61,37 @@ Now in this case, the commit that comes back looks like this:
 
 	added chapters on the packfile and how git stores objects
 	
-and we can see that the parent, <code>ab04d88</code> is where our master branch
-is currently pointing.  So, we recursively fetch this tree and then stop, since
-we know we have everything before this point.  You can force Git to double check
-that we have everything with the '--recover' option.  See linkgit:git-http-fetch[1]
-for more information.
+и можем видеть что родитель, <code>ab04d88</code> это где наша ветка master в действительности указывающая. Теперь, мы рекурсивно извлекаем это дерево и затем останавливаемся, так как мы знаем что у нас есть все что до этой точки. вы можете заставить Git дважды проверить что у нас уже есть все с помощью параметра '--recover'. Просмотрите документацию linkgit:git-http-fetch[1] чтобы получить больше подробностей.
 
-If one of the loose object fetches fails, Git will download the packfile indexes
-looking for the sha that it needs, then download that packfile. 
+Если извлечение одног из открытых объектов потерпит неудачу, Git будет скачивать индексы пайфайлов пытаясь найти sha значение которое ему нужно, и затем скачает этот пайфайл. 
 
-It is important if you are running a git server that serves repos this way to
-implement a post-receive hook that runs the 'git update-server-info' command
-each time or there will be confusion.	
+Это важно если вы используете git сервер который обслуживает репозитории этим способом что реализация хуков post-recieve которая выполняется командой 'git update-server-info' каждый раз или произойдет путаница..	
 
-### Fetching Data with Upload Pack ###
+### Извлечение данных с помощью выгрузки пакетов ###
 
-For the smarter protocols, fetching objects is much more efficient.  A socket
-is opened, either over ssh or over port 9418 (in the case of the git:// protocol),
-and the linkgit:git-fetch-pack[1] command on the client begins communicating with
-a forked linkgit:git-upload-pack[1] process on the server.
+Для более умных протоколов, извлечение объектов намного более эффективно. Сокет открыт, или через ssh или другой порт 9418 (в случае протокола git://), и команда linkgit:git-fetch-pack[1] на клиенте начнет передавать с форком процесса linkgit:git-upload-pack[1] на сервере..
 
-Then the server will tell the client which SHAs it has for each ref,
-and the client figures out what it needs and responds with a list of SHAs it
-wants and already has.
+Затем сервер сообщит клиенту которое SHA значение он имеет для каждой ref, и клиент определит что ему нужно и ответит со списком значение SHA ему нужных и уже которые есть.
 
-At this point, the server will generate a packfile with all the objects that 
-the client needs and begin streaming it down to the client.
+В этот момент, сервер сгенерирует пакйфайл со всеми объектами которые нужны клиенту и передаст их клиенту.
 
-Let's look at an example.
+Давайте взглянем на пример.
 
-The client connects and sends the request header. The clone command
+Клиент соединяется и посылает заголовок запроса. Команда клон
 
 	$ git clone git://myserver.com/project.git
 
-produces the following request:
+производит следующий запрос:
 
 	0032git-upload-pack /project.git\\000host=myserver.com\\000
 
-The first four bytes contain the hex length of the line (including 4 byte line
-length and trailing newline if present). Following are the command and
-arguments. This is followed by a null byte and then the host information. The
-request is terminated by a null byte.
+Первые 4 байта содержат 16ое длину строки (включая 4 байта длины строки и символ окончания строки если таковой имеется). Следующее это команды и их аргументы. Затем идет нулевой байт и затем данное о хосте. Запрос заканчивается нулевым байтом..
 
-The request is processed and turned into a call to git-upload-pack:
+Запрос обрабатывается и конвертируется в вызов git-upload-pack:
 
  	$ git-upload-pack /path/to/repos/project.git
 
-This immediately returns information of the repo:
+Это немедленно возвращает информацию репозитория:
 
 	007c74730d410fcb6603ace96f1dc55ea6196122532d HEAD\\000multi_ack thin-pack side-band side-band-64k ofs-delta shallow no-progress
 	003e7d1665144a3a975c05f1f43902ddaf084e784dbe refs/heads/debug
@@ -130,11 +100,9 @@ This immediately returns information of the repo:
 	003f74730d410fcb6603ace96f1dc55ea6196122532d refs/heads/master
 	0000
 
-Each line starts with a four byte line length declaration in hex. The section
-is terminated by a line length declaration of 0000.
+Каждая строка начинается с 4 байт строки длины объявления в hex. Эта часть завершается строковой длиной объявления 0000.
 
-This is sent back to the client verbatim. The client responds with another
-request:
+Это отсылается назад клиенту. Клиент отвечает другим запросом:
 
 	0054want 74730d410fcb6603ace96f1dc55ea6196122532d multi_ack side-band-64k ofs-delta
 	0032want 7d1665144a3a975c05f1f43902ddaf084e784dbe
@@ -143,8 +111,7 @@ request:
 	0032want 74730d410fcb6603ace96f1dc55ea6196122532d
 	00000009done
 
-The is sent to the open git-upload-pack process which then streams out the 
-final response:
+Это оправлено чтобы открыть процесс git-upload-pack создат поток который затем и вернет назад как заключительный ответ:
 
 	"0008NAK\n"
 	"0023\\002Counting objects: 2797, done.\n"
@@ -165,23 +132,12 @@ final response:
 	...
 	"<\\276\\255L\\273s\\005\\001w0006\\001[0000"
 	
-See the Packfile chapter previously for the actual format of the packfile data
-in the response.
+Просмотрите предыдущую главу Пакфайл чтобы получить фактический формат данных пакфайла в ответе.
 	
-### Pushing Data ###
+### Выполнение Push данных ###
 
-Pushing data over the git and ssh protocols is similar, but simpler.  Basically
-what happens is the client requests a receive-pack instance, which is started
-up if the client has access, then the server returns all the ref head shas it
-has again and the client generates a packfile of everything the server needs
-(generally only if what is on the server is a direct ancestor of what it is
-pushing) and sends that packfile upstream, where the server either stores it
-on disk and builds an index for it, or unpacks it (if there aren't many objects
-in it)
+Выполнение push данных через git и ssh протоколы похоже, но проще. По существу что происходит это клиент запрашивает экземпляр receive-pack, который запускается если клиент имеет доступ, затем сервер возвращает все sha заголовки ref которые у него есть опять и клиент генерирует пакфайл всего что требуется серверу (обычно только если то что на сервере это прямой предок того что и идет в push) и посылает этот пакфайл в исходищий поток, где сервер или сохраняет его на диске и строит индекс для него, или распаковывает его (если там не много объектов)
 
-This entire process is accomplished through the linkgit:git-send-pack[1] command
-on the client, which is invoked by linkgit:git-push[1] and the 
-linkgit:git-receive-pack[1] command on the server side, which is invoked by 
-the ssh connect process or git daemon (if it's an open push server).
+Это весь процесс выполняется с помощью команды linkgit:git-send-pack[1] на клиенте, которая вызывается linkgit:git-push[1] и linkgit:git-receive-pack[1]командой на стороне сервера, которая вызывается процессом соединения ssh или демоном git (если это открытый push сервер).
 
 

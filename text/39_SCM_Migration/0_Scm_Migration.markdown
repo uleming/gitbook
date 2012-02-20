@@ -1,32 +1,25 @@
-## SCM Migration ##
+## SCM миграция ##
 
-So you've made the decision to move away from your existing system
-and convert your whole project to Git.  How can you do that easily?
+Вы приняли решение сменить с вашей текущей системы и сконвертировать весь проект в Git. Как проделать это быстро и безболезненно?
 
-### Importing Subversion ###
+### Импорт Subversion ###
 
-Git comes with a script called git-svn that has a clone command that
-will import a subversion repository into a new git repository.  There
-is also a free tool on the GitHub service that will do this for you.
+Git поставляется со скриптом git-svn который имеет команду клон которая импортирует репозиторий subversion в новый git репозиторий. Также существует бесплатная утилита на GitHub которая может это сделать.
 	
 	$ git-svn clone http://my-project.googlecode.com/svn/trunk new-project
 
-This will give you a new Git repository with all the history of the
-original Subversion repo.  This takes a pretty good amount of time, generally,
-since it starts with version 1 and checks out and commits locally every
-single revision one by one.
+Это даст вам новый Git репозиторий со всей историей оригинального репозитория Subversion. Это занимает большое количество времени, обычно, она начинается с версии й и извлекает и выполняет коммиты локально каждую одну ревизию один за один..
 
-### Importing Perforce ###
+### Импорт Perforce ###
 
-In contrib/fast-import you will find the git-p4 script, which is a 
-Python script that will import a Perforce repository for you.
+В contrib/fast-import вы найдете скрипт git-p4, это Python скрипт который может импортировать для вас репозиторий Perforce.
 
 	$ ~/git.git/contrib/fast-import/git-p4 clone //depot/project/main@all myproject
 	
 
-### Importing Others ###
+### Импорт других ###
 
-These are other SCMs that listed high on the Git Survey, should find import
+Существуют другие SCM которые перечислены выше в Git Survey, найдите документацию по импорту для них.
 docs for them.  !!TODO!!
 
 * CVS

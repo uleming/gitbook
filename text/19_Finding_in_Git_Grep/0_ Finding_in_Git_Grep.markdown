@@ -1,12 +1,10 @@
 ## Finding with Git Grep ##
 
-Finding files with words or phrases in Git is really easy with the 
-linkgit:git-grep[1] command.  It is possible to do this with the normal
-unix 'grep' command, but with 'git grep' you can also search through
-previous versions of the project without having to check them out.
+Поиск файлов содержащих слово или фразу в Git очень просто с помощью команды
+linkgit:git-grep[1]. Это возможно проделать это с помощью обычных Unix команды
+'grep', но с помощью 'git grep' вы можете искать также в предыдущих версиях проекта без его чекоута в рабочую директорию.
 
-For example, if I wanted to see every place that used the 'xmmap' call in
-my git.git repository, I could run this:
+Например, если Я захотел увидеть каждое место где был использован вызов 'xmmap' в моем репозитории git.git, Я могу выполнить это:
 
 	$ git grep xmmap
 	config.c:               contents = xmmap(NULL, contents_sz, PROT_READ,
@@ -21,8 +19,7 @@ my git.git repository, I could run this:
 	sha1_file.c:            buf = xmmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
 	wrapper.c:void *xmmap(void *start, size_t length,
 
-If I wanted to see the line number of each match as well, I can add the '-n'
-option:
+Если Я захотел увидеть также номер линии каждого совпадения, я могу добавить параметр '-n':
 
 	$>git grep -n xmmap
 	config.c:1016:          contents = xmmap(NULL, contents_sz, PROT_READ,
@@ -37,7 +34,7 @@ option:
 	sha1_file.c:2393:               buf = xmmap(NULL, size, PROT_READ, MAP_PRIVATE, fd
 	wrapper.c:89:void *xmmap(void *start, size_t length,
 
-If we're only interested in the filename, we can pass the '--name-only' option:
+Если мы заинтересованы и имени файла, мы можем передать параметр '--name-only':
 
 	$>git grep --name-only xmmap
 	config.c
@@ -48,8 +45,7 @@ If we're only interested in the filename, we can pass the '--name-only' option:
 	sha1_file.c
 	wrapper.c
 
-We could also see how many line matches we have in each file with the '-c' 
-option:
+Мы также можем увидеть как много линий совпадает у нас в каждом файле с помощью параметра '-c':
 
 	$>git grep -c xmmap
 	config.c:1
@@ -60,8 +56,7 @@ option:
 	sha1_file.c:5
 	wrapper.c:1
 
-Now, if I wanted to see where that was used in a specific version of git, I 
-could add the tag reference to the end, like this:
+Теперь, если Я хочу увидеть где это было использовано в определенной версии git, Я могу добавить ссылку таг в конец:
 
 	$ git grep xmmap v1.5.0
 	v1.5.0:config.c:                contents = xmmap(NULL, st.st_size, PROT_READ,
@@ -75,19 +70,15 @@ could add the tag reference to the end, like this:
 	v1.5.0:sha1_file.c:     map = xmmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 
 	v1.5.0:sha1_file.c:             buf = xmmap(NULL, size, PROT_READ, MAP_PRIVATE, fd
 
-We can see that there are some differences between the current lines and these
-lines in version 1.5.0, one of which is that xmmap is now used in wrapper.c where
-it was not back in v1.5.0.
+Мы можем видеть что есть некоторые отличия между текущими строками и строками в версии 1.5.0, одно из которых это то что xmmap теперь используется в wrapper.c в отличии от версии v1.5.0 где это было не так.
 
-We can also combine search terms in grep.  Say we wanted to search for where
-SORT_DIRENT is defined in our repository:
+Мы также можем комбинировать условия поиска в grep. Положим мы захотели найти где в нашем репозитории определена SORT_DIRENT:
 
 	$ git grep -e '#define' --and -e SORT_DIRENT
 	builtin-fsck.c:#define SORT_DIRENT 0
 	builtin-fsck.c:#define SORT_DIRENT 1
 
-We can also search for every file that has *both* search terms, but display
-each line that has *either* of the terms in those files:
+Мы также можем поискать каждый файл который удовлетворяет *both* условиям поиска, но отобразив каждую строку которая имеет или условие *either* в этих файлах:
 
 	$ git grep --all-match -e '#define' -e SORT_DIRENT
 	builtin-fsck.c:#define REACHABLE 0x0001
@@ -101,9 +92,7 @@ each line that has *either* of the terms in those files:
 	builtin-fsck.c:#define MAX_SHA1_ENTRIES (1024)
 	builtin-fsck.c: if (SORT_DIRENT)
 
-We can also search for lines that have one term and either of two other terms,
-for example, if we wanted to see where we defined constants that had either
-PATH or MAX in the name:
+Мы также можем поискать строки которые содержут один термин и оба двух других терминов, например мы захотели увидеть где мы определили постоянные которые имеют и тот и другой PATH или MAX в имени:
 
 	$ git grep -e '#define' --and \( -e PATH -e MAX \) 
 	abspath.c:#define MAXDEPTH 5
@@ -115,4 +104,4 @@ PATH or MAX in the name:
 	...
 	
 
-	
+Что здесь имелось ввиду под словом term - терминн или условие или просто слово

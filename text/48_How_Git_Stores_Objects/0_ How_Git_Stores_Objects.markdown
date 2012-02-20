@@ -1,29 +1,22 @@
-## How Git Stores Objects ##
+## Как Git хранит объекты ##
 
-This chapter goes into detail about how Git physically stores objects.
+Эта глава более подробно описывает как Git физически хранит объекты.
 
-All objects are stored as compressed contents by their sha values.  They
-contain the object type, size and contents in a gzipped format.
+Все объекты хранятся в сжатом виде по имени их sha значения. Они содержат тип объекта, размер и содержимое в формате gzipped.
 
-There are two formats that Git keeps objects in - loose objects and 
-packed objects. 
+Существуют два формата в которых Git хранит объекты - открытые и сжатые. 
 
 ### Loose Objects ###
 
-Loose objects are the simpler format.  It is simply the compressed data stored
-in a single file on disk.  Every object written to a seperate file.
+Открытые объекты это простейший формат. Это просто сжатые данные сохраненные в файл на диске. Каждый объект записывается в отдельный файл.
 
-If the sha of your object is <code>ab04d884140f7b0cf8bbf86d6883869f16a46f65</code>,
-then the file will be stored in the following path:
+Если sha значение вашего объекта <code>ab04d884140f7b0cf8bbf86d6883869f16a46f65</code>, то файл путь к файлу будет следующим:
 
 	GIT_DIR/objects/ab/04d884140f7b0cf8bbf86d6883869f16a46f65
 
-It pulls the first two characters off and uses that as the subdirectory, so that
-there are never too many objects in one directory.  The actual file name is 
-the remaining 38 characters.
+Git отсекает два первых символа и использует их как поддиректорию, и таким образом никогда не бывает очень много объектов в одной директории. Имя файла в действительности состоит из оставшихся 38 символов.
 
-The easiest way to describe exactly how the object data is stored is this Ruby
-implementation of object storage:
+Простейший способ описать в точности как хранятся данные, это показать реализацию на Ruby хранилища объекта:
 
 	ruby
 	def put_raw_object(content, type)
@@ -46,32 +39,17 @@ implementation of object storage:
 	  return sha1
 	end
 
-### Packed Objects ###
+### Сжатые объекты ###
 
-The other format for object storage is the packfile. Since Git stores each 
-version of each file as a seperate object, it can get pretty inefficient. 
-Imagine having a file several thousand lines long and changing a single line.
-Git will store the second file in it's entirety, which is a great big waste
-of space.
+Другой формат хранения объектов это пакфайлы, Так как Git хранит каждую версию файла как отдельный объект, то это способ будет очень неэффективным. Представте что у вас есть файл в несколько тысяч строк и изменяется всего лишь одна строка. Git сохранит второй файл не полность, что было бы расточительством дискового пространства.
 
-In order to save that space, Git utilizes the packfile.  This is a format
-where Git will only save the part that has changed in the second file, with 
-a pointer to the file it is similar to.  
+Чтобы сохранить это простронство,Git использует пакфайлы. Это формат, где Git сохранит только измененную часть второго файла, и указатель на первый.  
 
-When objects are written to disk, it is often in the loose format, since
-that format is less expensive to access.  However, eventually you'll want
-to save the space by packing up the objects - this is done with the 
-linkgit:git-gc[1] command.  It will use a rather complicated heuristic to 
-determine which files are likely most similar and base the deltas off that
-analysis.  There can be multiple packfiles, they can be repacked if neccesary
-(linkgit:git-repack[1]) or unpacked back into loose files 
-(linkgit:git-unpack-objects[1]) relatively easily. 
+Когда объекты записываются на диск, часто это формат открытый, така как этот формат менее затратный для доступа. Тем не менее, со временем вы захотите сохранить дисковое простанство упаковывая объекты - это выполняется командой
+linkgit:git-gc[1]. Эта команда использует специальный алгоритм чтобы определить какие файлы похожи в наибольшей степени. Может быть множество пакфайлов, они могут быть перепакованы если это необходимо (linkgit:git-repack[1]) или легко распакованы обратно в свободный формат (linkgit:git-unpack-objects[1]). 
 
-Git will also write out an index file for each packfile that is much smaller 
-and contains offsets into the packfile to more quickly find specific objects 
-by sha.
+Git также запишет файл заморозки для каждого пакфайла который значительно меньше и содержит офсеты в пакфайле чтобы еще быстрее найти определенные объекты по их sha значению.
 
-The actual details of the packfile implementation are found in the Packfile
-chapter a little later on.
+Подробности реализации пакофайлов могут быть найдены в главе Пакфайлы которая будет несколько позже.
 
 

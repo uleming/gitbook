@@ -1,7 +1,7 @@
-## Glossary ##
+## Глоссарий ##
 
-Here we have the meanings of some terms used into Git context.  
-These terms were entirely copied from 
+Здесь даны определения некоторых терминов использованых в среде Git.  
+Все эти термины польностью могут быть скопированы из
 [Git Glossary](http://www.kernel.org/pub/software/scm/git/docs/gitglossary.html).  
 
 

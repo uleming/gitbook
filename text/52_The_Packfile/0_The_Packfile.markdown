@@ -1,52 +1,26 @@
-## The Packfile ##
+## Пакфайлы ##
 
-This chapter explains in detail, down to the bits, how the packfile and 
-pack index files are formatted.
+Это глава объясняет подрообно, до самых битов, какой формат записи у пакфайлов и упакованы индекс файлы.
 
-### The Packfile Index ###
+### Пакфайл индекса ###
 
-First off, we have the packfile index, which is basically just a series of 
-bookmarks into a packfile. 
+Первое, у нас есть пакфайл индекса, который в основе просто группа закладок в пакфайле. 
 
-There are two versions of the packfile index - version one, which is the default
-in versions of Git earlier than 1.6, and version two, which is the default
-from 1.6 forward, but which can be read by Git versions going back to 1.5.2, and
-has been further backported to 1.4.4.5 if you are still on the 1.4 series.
+Существуют две версии индекс пакфайла - версия один, которая по умолчанию для Git старше версии 1.6 и версия два которая по умолчанию начиная с версии 1.6, но но может быть прочитана Git вплоть до версии 1.5.2, и даже была портирована глубже до версии 1.4.4.5 если вы до сих пор работаете с версией из серии 1.4..
 
-Version 2 also includes a CRC checksum of each object so compressed data 
-can be copied directly from pack to pack during repacking without 
-undetected data corruption.  Version 2 indexes can also handle packfiles
-larger than 4 Gb.
+Версия два также включает CRC контрольную сумму каждого объекта и могут быть скопированы прямо из пакета в пакет во время операции переупакования без того что поврежденние данных может оказаться незамеченными. Индексы в версии 2 могут быть также обрабатывать пакфайлы размером более 4Gb.
 
 [fig:packfile-index]
 
-In both formats, the fanout table is simply a way to find the offset of a
-particular sha faster within the index file.  The offset/sha1[]
-tables are sorted by sha1[] values (this is to allow binary search of this
-table), and fanout[] table points at the offset/sha1[] table in a specific
-way (so that part of the latter table that covers all hashes that start
-with a given byte can be found to avoid 8 iterations of the binary
-search).
+В обоих форматах, fanout таблица это просто способ быстро найти смещение определенного sha внутри индекс файла. Таблицы offset/sha1[] сортируются по sha[] значениям (это для того чтобы позволить бинарный поиск по этой таблице), и таблица fanout[] указывает на таблицу offset/sha1[] определенном способом (таким образом часть последней таблицы которая охватывает все хэши которые начинаются с отданного байта могут быть найдены чтобы избежать 8 итераций бинарного поиска).
 
-In version 1, the offsets and shas are in the same space, where in version two, 
-there are seperate tables
-for the shas, crc checksums and offsets.  At the end of both files are 
-checksum shas for both the index file and the packfile it references.
+В версии 1, смещения и sha в одном пространстве, тогда как в версии 2, существуют раздельные таблицы для sha, crc и смещений. К конце обоих файлов проверочная сумма sha для обоих индекс файл и пакфайл его ссылки.
 
-Importantly, packfile indexes are *not* neccesary to extract objects from
-a packfile, they are simply used to *quickly* retrieve individual objects from
-a pack.  The packfile format is used in upload-pack and receieve-pack programs
-(push and fetch protocols) to transfer objects and there is no index used then
-- it can be built after the fact by scanning the packfile.
+Обратите внимание, пакфайлы индексов есть не *not* необходимость выделить объекты из пакфайла, они просто использованы быстро *quickly* получить отдельные объекты из пакета. Формат пакфайла использован в upload-pack и receieve-pack программах (push и fetch протокол) чтобы передавать объекты и не использован индекс когда - он может быть собран после факта сканируя пакфайл.
 
-### The Packfile Format ###
+### Формат пакфайла ###
 
-The packfile itself is a very simple format.  There is a header, a series of
-packed objects (each with it's own header and body) and then a checksum trailer.
-The first four bytes is the string 'PACK', which is sort of used to make sure 
-you're getting the start of the packfile correctly.  This is followed by a 4-byte
-packfile version number and then a 4-byte number of entries in that file.  In
-Ruby, you might read the header data like this:
+Пакфайл сам по себе очень простой формат. Существует заголовок, группа упакованных объектов (каждый со своим заголовоком и телом) и затем в конце контрольная сумма. Первые четыре байта это строка 'PACK', которая гарантирует что вы получаете начало пакфайла правильно. Затем идет 4 байта версии пакфайла и затем 4 байта количество записей в этом файле. В Ruby, вы могли бы прочитать данные заголовока след.образом:
 
 	ruby
 	def read_pack_header
@@ -56,48 +30,23 @@ Ruby, you might read the header data like this:
 	  [sig, ver, entries]
 	end
 
-After that, you get a series of packed objects, in order of thier SHAs
-which each consist of an object header and object contents.  At the end
-of the packfile is a 20-byte SHA1 sum of all the shas (in sorted order) in that
-packfile. 
+После этого, вы получаете группу упакованных объектов, в порядке их SHA каждый из которых состоит из заголовка объекта и содержимого объекта. В конце пакфайла 20 байтовая сумма SHA1 всех sha значений (в отсортированном порядке) в этом пакфайле. 
 
 [fig:packfile-format]
 
-The object header is a series of one or more 1 byte (8 bit) hunks that
-specify the type of object the following data is, and the size of the data
-when expanded.  Each byte is really 7 bits of data, with the first bit being
-used to say if that hunk is the last one or not before the data starts.  If
-the first bit is a 1, you will read another byte, otherwise the data starts
-next.  The first 3 bits in the first byte specifies the type of data, 
-according to the table below. 
+Заголовок объекта это группа из одного или более 1 байта (8 битов) которые определяют тип объекта и последующие данные, и размер данных когда развернуты. Каждый байт в действительности 7 битов данных, с первым битом использованным чтобы сказать если это кусок последний или не доэтого данные начинаются. Если первый бит 1, вы прочитаете другой байт, иначе далее идут данные. Первые 3 бита в первом байте оаределяют тип данных, в соотвествии с таблицей ниже. 
 
-(Currently, of the 8 values that can be expressed
-with 3 bits (0-7), 0 (000) is 'undefined' and 5 (101) is not yet used.)
+(В данный момент, 8 значений которые могут выразить 3 бита (0-7), 0 (000)неопределен а 5 (101) неиспользован.
 
-Here, we can see an example of a header of two bytes, where the first
-specifies that the following data is a commit, and the remainder of the first
-and the last 7 bits of the second specifies that the data will be 144 bytes
-when expanded.
+Здесь мы можем увидеть примеры заголовка двух байтов, где первый определяет что следом идущие данные это коммит, и остаток первого и последние 7 битов второго определяют то что данные занимать 144 байта после открытия.
 
 [fig:packfile-logic]
 
-It is important to note that the size specified in the header data is not 
-the size of the data that actually follows, but the size of that data *when 
-expanded*. This is why the offsets in the packfile index are so useful, 
-otherwise you have to expand every object just to tell when the next header 
-starts.
+Это важно заметить что размер определенных в заголовке данных не размер который в действительно последует, но размер тех данных *когда они будут извлечены*. Поэтому смещение в индексе пакфайла так полезно, иначе вы должны расширить каждый объект просто говорите когда следующий заголовок начнется.
 
-The data part is just zlib stream for non-delta object types; for the two
-delta object representations, the data portion contains something that
-identifies which base object this delta representation depends on, and the
-delta to apply on the base object to resurrect this object.  <code>ref-delta</code>
-uses 20-byte hash of the base object at the beginning of data, while
-<code>ofs-delta</code> stores an offset within the same packfile to identify the base
-object.  In either case, two important constraints a reimplementor must
-adhere to are:
+Та часто что является данными это просто zlib поток для  non-delta типа объектов; для двух дельта объектов представлений, порция данных содержащая что то что идентифицирует который базовый объект эта дельта представление зависит от, и дельто чтобы наложить на базовый объект чтобы восстановить объект. <code>ref-delta</code> использует 20-байтный хэш базоваго объекта в начале данных, в то время как <code>ofs-delta</code> хранит смещение в пределах того же пакфайла чтобы идентифицировать базовый объект. В других случаях, два важных ограничения перереализатор должен следовать:
 
-* delta representation must be based on some other object within the same
-  packfile;
+* дельта представление должно быть основано на некоторм другом объекте того же 
+  пакфайла;
 
-* the base object must be of the same underlying type (blob, tree, commit
-  or tag);
+* базовый объект должен быть того же нижележащего типа (блоб, дерево, коммит или таг);

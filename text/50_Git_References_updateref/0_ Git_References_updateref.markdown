@@ -1,5 +1,6 @@
-## Git References ##
+## Git Справочник ##
 
+Ветви, удаленно-отслеживаемые ветки, и таги все ссылаются на коммиты. Все ссылки именуются с слэш разделенным имени пути начинающимся с "refs"; имена которыми мы пользуемся до сих пор в действительно короткие
 Branches, remote-tracking branches, and tags are all references to
 commits.  All references are named with a slash-separated path name
 starting with "refs"; the names we've been using so far are actually
@@ -9,31 +10,20 @@ shorthand:
 	- The tag "v2.6.18" is short for "refs/tags/v2.6.18".
 	- "origin/master" is short for "refs/remotes/origin/master".
 
-The full name is occasionally useful if, for example, there ever
-exists a tag and a branch with the same name.
+Полное имя иногда полезно, если например, существует ветка и таг с одинаковым именем.
 
-(Newly created refs are actually stored in the .git/refs directory,
-under the path given by their name.  However, for efficiency reasons
-they may also be packed together in a single file; see
-linkgit:git-pack-refs[1]).
+(Только созданные ссылки в действительности хнанятся в директории .git/refs, по пути данным их по их имени. Как бы там ни было, по причине эффективности они могут также быть упакованы вместе в единый файл; просмотрите linkgit:git-pack-refs[1]).
 
-As another useful shortcut, the "HEAD" of a repository can be referred
-to just using the name of that repository.  So, for example, "origin"
-is usually a shortcut for the HEAD branch in the repository "origin".
+Другой полезный сокращение, получить ссылку на "HEAD" репозитория можно просто используя имя этого репозитория. Например имя "origin" обычно сокращение для HEAD ветки в репозитории "origin".
 
-For the complete list of paths which git checks for references, and
-the order it uses to decide which to choose when there are multiple
-references with the same shorthand name, see the "SPECIFYING
-REVISIONS" section of linkgit:git-rev-parse[1].
+Для полного списка путей которые git проверяет на ссылки, и порядок который они использует чтобы решать что выбрать когда есть несколько ссылок с одним сокращенным именем, просмотрите секцию "SPECIFYING REVISIONS" linkgit:git-rev-parse[1].
 
 
 ### Showing commits unique to a given branch ###
 
-Suppose you would like to see all the commits reachable from the branch
-head named "master" but not from any other head in your repository.
+Предположим вам хочется увидеть все коммиты достижимые их ветки HEAD которой именуется "master" но не из любой другой головы в вашем репозитории.
 
-We can list all the heads in this repository with
-linkgit:git-show-ref[1]:
+Мы можем получить список голов в нашем репозитории с помощью linkgit:git-show-ref[1]:
 
     $ git show-ref --heads
     bf62196b5e363d73353a9dcf094c59595f3153b7 refs/heads/core-tutorial
@@ -42,8 +32,7 @@ linkgit:git-show-ref[1]:
     24dbc180ea14dc1aebe09f14c8ecf32010690627 refs/heads/tutorial-2
     1e87486ae06626c2f31eaa63d26fc0fd646c8af2 refs/heads/tutorial-fixes
 
-We can get just the branch-head names, and remove "master", with
-the help of the standard utilities cut and grep:
+Мы можем получить просто именаголов ветвей, и удалить "master", с помощью стандартных утилит cut и grep:
 
     $ git show-ref --heads | cut -d' ' -f2 | grep -v '^refs/heads/master'
     refs/heads/core-tutorial
@@ -51,18 +40,15 @@ the help of the standard utilities cut and grep:
     refs/heads/tutorial-2
     refs/heads/tutorial-fixes
 
-And then we can ask to see all the commits reachable from master
-but not from these other heads:
+И затем мы можем запросить просмотреть все коммиты достижимые из ветки master но не из других голов:
 
     $ gitk master --not $( git show-ref --heads | cut -d' ' -f2 |
     				grep -v '^refs/heads/master' )
 
-Obviously, endless variations are possible; for example, to see all
-commits reachable from some head but not from any tag in the repository:
+Очевидно, бесконечные вариации возможны; например чтобы увидеть все коммиты достижимые из некоторой головы но не из какого либо тага в репозитории:
 
     $ gitk $( git show-ref --heads ) --not  $( git show-ref --tags )
 
-(See linkgit:git-rev-parse[1] for explanations of commit-selecting
-syntax such as `--not`.)
+(Просмотрите linkgit:git-rev-parse[1] чтобы получить объяснение синтаксиса commit-selecting такого как `--not`.)
 
 (!!update-ref!!)

@@ -1,56 +1,37 @@
-## Setting Up A Public Repository ##
+## Установка публичного репозитория ##
 
-Assume your personal repository is in the directory ~/proj.  We
-first create a new clone of the repository and tell git-daemon that it
-is meant to be public:
+Предположим ваш персональный репозиторий находится в директории ~/proj. Сначала мы создадим клон репозитория и скажем демону git (git-daemon) что он предназначен быть публичным:
 
     $ git clone --bare ~/proj proj.git
     $ touch proj.git/git-daemon-export-ok
 
-The resulting directory proj.git contains a "bare" git repository--it is
-just the contents of the ".git" directory, without any files checked out
-around it.
+Результирующая директория proj.git содержит "пустой" репозиторий git-- это только содержимое директории ".git", без каких либо файлов.
 
-Next, copy proj.git to the server where you plan to host the
-public repository.  You can use scp, rsync, or whatever is most
-convenient.
+Затем скопируем proj.git на сервер где вы планируете хостить публичный репозиторий. Вы можете использовать scp, rsync, или что нибудь более привычное или удобное.
 
-### Exporting a git repository via the git protocol ###
+### Экспорт репозитория git через протоколо git ###
 
-This is the preferred method.
+Это предпочтительный способ.
 
-If someone else administers the server, they should tell you what
-directory to put the repository in, and what git:// URL it will appear
-at.
+Если кто либо администрирует сервер, они должны сказать вам в какую директорию поместить репозиторий, и что появится URL git://.
 
-Otherwise, all you need to do is start linkgit:git-daemon[1]; it will
-listen on port 9418.  By default, it will allow access to any directory
-that looks like a git directory and contains the magic file
-git-daemon-export-ok.  Passing some directory paths as git-daemon
-arguments will further restrict the exports to those paths.
+Иначе, все что вам нужно сделать это запустить linkgit:git-daemon[1]; он будет слушать порт 9418. По умолчанию, он разрешит доступ в любую директорию которая выглядит как репозиторий git и содержит волшебный файл git-daemon-export-ok. Передача путей директорий как аргументы git-daemon ограничит экспорт до этих путей.
 
-You can also run git-daemon as an inetd service; see the
-linkgit:git-daemon[1] man page for details.  (See especially the
-examples section.)
+Вы также можете запустить git-daemon как сервис inetd; просмотрите документацию по linkgit:git-daemon[1] чтобы получить больше подробностей. (Обратите особое внимание на секцию примеров.)
 
-### Exporting a git repository via http ###
+### Экспорт репозитория git через http ###
 
-The git protocol gives better performance and reliability, but on a
-host with a web server set up, http exports may be simpler to set up.
+Протокол git дает лучшую производительность и надежность, но на хосте с установленным вебсервером,экспорт http будет проще установить.
 
-All you need to do is place the newly created bare git repository in
-a directory that is exported by the web server, and make some
-adjustments to give web clients some extra information they need:
+Все что вам нужно сделать это положить новый созданный пустой репозиторий git в директории которая доступна вебсерверу, и скорректировать немного чтобы дать веб клиентам эктра информацию которая им нужна:
 
     $ mv proj.git /home/you/public_html/proj.git
     $ cd proj.git
     $ git --bare update-server-info
     $ chmod a+x hooks/post-update
 
-(For an explanation of the last two lines, see
-linkgit:git-update-server-info[1] and linkgit:githooks[5].)
+(Для объяснения последних двух строк, просмотрите linkgit:git-update-server-info[1] и linkgit:githooks[5].)
 
-Advertise the URL of proj.git.  Anybody else should then be able to
-clone or pull from that URL, for example with a command line like:
+Объявите URL proj.git. Потом любой может склонировать или вытянуть репозиторий, например просто выполнив команду:
 
     $ git clone http://yourserver.com/~you/proj.git

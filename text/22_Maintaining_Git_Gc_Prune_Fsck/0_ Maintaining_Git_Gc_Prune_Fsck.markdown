@@ -1,24 +1,19 @@
-## Maintaining Git ##
+## Сопровождение Git ##
 
-### Ensuring good performance ###
+### Обеспечение хорошей производительности ###
 
-On large repositories, git depends on compression to keep the history
-information from taking up too much space on disk or in memory.
+На больших репоозиториях, git зависит от сжатия чтобы информацию истории содержалась занимала дискового простаранства или памяти.
 
-This compression is not performed automatically.  Therefore you
-should occasionally run linkgit:git-gc[1]:
+Это сжатие не выполнятеся автоматически. Поэтому вы должны иногда выполнять linkgit:git-gc[1]:
 
     $ git gc
 
-to recompress the archive.  This can be very time-consuming, so
-you may prefer to run git-gc when you are not doing other work.
+чтобы заново сжать архив. Это может занят длительное время, так что вы возможно предпочтете выполнять git-gc когда не заняты чем то другим.
 
 
-### Ensuring reliability ###
+### Обеспечение достоверности ###
 
-The linkgit:git-fsck[1] command runs a number of self-consistency checks
-on the repository, and reports on any problems.  This may take some
-time.  The most common warning by far is about "dangling" objects:
+Команда linkgit:git-fsck[1] выполняет некоторое количество проверок целостности репозитория, и составляет отчет если будут найдены какие либо проблемы. Это возможно займет некоторое время. Наиболее общее предупреждение в значительной степени будет о подвешенных объектах:
 
     $ git fsck
     dangling commit 7281251ddd2a61e38657c827739c57015671a6b3
@@ -31,6 +26,4 @@ time.  The most common warning by far is about "dangling" objects:
     dangling tree b24c2473f1fd3d91352a624795be026d64c8841f
     ...
 
-Dangling objects are not a problem.  At worst they may take up a little
-extra disk space.  They can sometimes provide a last-resort method for
-recovering lost work.
+Подвешенные объекты это не проблема. Самое худшее что они могут сделать это просто занять немного дополнительного дискового пространства. Иногда они могут предложить способ восстановить потерянную работу.

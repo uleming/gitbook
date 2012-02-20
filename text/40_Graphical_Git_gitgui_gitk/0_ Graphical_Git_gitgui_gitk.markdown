@@ -1,22 +1,18 @@
-## Graphical Git ##
+## Наглядный Git ##
 
-Git has a couple of fairly popular Graphial User Interfaces that can
-read and/or maniplulate Git repositories. 
+Для Git существует пара популярных GUI которые могут читать и/или манипулировать репозиториями Git . 
 
-### Bundled GUIs ###
+### GUI в комплекте ###
 
-Git comes with two major GUI programs written in Tcl/Tk.  Gitk is a 
-repository browser and commit history visualization tool.
+Git поставляется с двумя основными GUI программами написанными на Tcl/Tk.  Gitk это обозреватель репозитория и инструмент визуализации истории коммитов.
 
 [gitk](http://www.kernel.org/pub/software/scm/git/docs/gitk.html)
 
-linkgit:git-gui[1] is a tool that helps you visualize the index operations,
-like add, remove and commit.  It won't do everything you can do on the 
-command line, but for many of the basic operations, it's pretty good.
+linkgit:git-gui[1] это инструмент который поможет вам наглядно изобразить процессы заморозки, такие как добавление, удаление и выполнение коммита. Он не позволит вам выполнить все то что вы можете делать в командной строке, но в большинстве базовых операций будет вполне достаточно.
 
 [git gui](http://www.kernel.org/pub/software/scm/git/docs/git-gui.html)
  
-### Third Party Projects ###
+### Сторонние аналогичные проекты ###
 
 For Mac users, there are
 [GitX](http://gitx.frim.nl/) and [GitNub](http://github.com/Caged/gitnub/wikis)

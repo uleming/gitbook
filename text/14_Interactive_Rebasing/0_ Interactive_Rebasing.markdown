@@ -1,26 +1,18 @@
-## Interactive Rebasing ##
+## Интерактивное Rebasing ##
 
-Вы также можете выполнять rebase интерактивно. Это часто используется чтобы переписать ваши объкеты коммит перед как выполнить их push This is often used to re-write your
-own commit objects before pusing them somewhere.  It is an easy way to 
-split, merge or re-order commits before sharing them with others.  You
-can also use it to clean up commits you've pulled from someone when
-applying them locally.
+Вы также можете выполнять rebase интерактивно. Это часто используется чтобы переписать ваши объекты коммит перед как выполнить их push. Это простой способ разделить, слить или переупорядочить коммиты перед тем как расшарить их с другими. Вы также можете использовать их чтобы чистить коммиты которые вы вытянули у кого либо и затем применить их на локальном репозитории..
 
-If you have a number of commits that you would like to somehow modify
-during the rebase, you can invoke interactive mode by passing a '-i' or
-'--interactive' to the 'git rebase' command.
+Если у вас есть некоторое число коммитов которые вы хотели бы модифицировать во время выполнения rebase, вы можете вызвать интерактивный диалог передав параметр '-i' или '--interactive' в команду 'git rebase'.
 
 	$ git rebase -i origin/master
 	
-This will invoke interactive rebase mode on all the commits you have made
-since the last time you have pushed (or merged from the origin repository).
+Это вызовет интерактивный режим выполнения операции rebase на все коммиты которые вы сделали с вашего последнего момента выполнения push (или слияния из репозитория origin).
 
-To see what commits those are beforehand, you can run log this way:
+Чтобы увидеть эти коммиты заранее, вы можете выполнить команду git log след. образом:
 	
 	$ git log github/master..
 	
-Once you run the 'rebase -i' command, you will be thrown into your editor
-of choice with something that looks like this:
+Как только вы выполнили команду 'rebase -i', тут же откроется ваш редактор по умолчанию с текстом похожим на что то в виде:
 
 	pick fc62e55 added file_size
 	pick 9824bf4 fixed little thing
@@ -39,24 +31,15 @@ of choice with something that looks like this:
 	# However, if you remove everything, the rebase will be aborted.
 	#
 
-This means that there are 5 commits since you last pushed and it gives you 
-one line per commit with the following format:
+Это означает что было сделано пять коммитов с последнего выполнения вами push и это даст вам одну линию на каждый коммит следующего формата:
 
 	(action) (partial-sha) (short commit message)
 	
-Now, you can change the action (which is by default 'pick') to either 'edit'
-or 'squash', or just leave it as 'pick'.  You can also reorder the commits
-just by moving the lines around however you want.  Then, when you exit the 
-editor, git will try to apply the commits however they are now arranged and
-do the action specified. 
+Теперь, вы можете изменить действие (по умолчанию 'pick'-выбрать) на 'edit'-редактировать или 'squash'- сдавить или просто оставте это как 'pick'. Вы можете также переупорядочить коммиты просто передвигая линии так как вам этого хочется. Затем, когда вы выйдете из редактора, git попытается уложить коммиты тем образом каким вы это определили и выполнить действия определенные вами. 
 
-If 'pick' is specified, it will simply try to apply the patch and save the 
-commit with the same message as before.
+Если определен 'pick', то он просто попробует применить патч и сохранить коммит с тем же сообщением-описанием как и было до этого.
 
-If 'squash' is specified, it will combine that commit with the previous one
-to create a new commit.  This will drop you into your editor again to merge
-the commit messages of the two commits it is now squashing together.  So, 
-if you exit the editor with this:
+Если определено 'squash', то он будет комбинировать это коммит с предыдущим чтобы создать новый коммит. Вы опять попадете в редактор чтобы объединить оба сообщение-описания обоих коммитов сдавив их вместе. Таким образом если вы выйдете из редактора с этим:
 
 	pick   fc62e55 added file_size
 	squash 9824bf4 fixed little thing
@@ -64,7 +47,7 @@ if you exit the editor with this:
 	squash 76b9da6 added the apply command
 	squash c264051 Revert "added file_size" - not implemented correctly
 
-Then you will have to create a single commit message from this:
+То вам нужно создать одно сообщение-описание коммита из этого:
 
 	# This is a combination of 5 commits.
 	# The first commit's message is:
@@ -88,15 +71,11 @@ Then you will have to create a single commit message from this:
 
 	This reverts commit fc62e5543b195f18391886b9f663d5a7eca38e84.
 
-Once you have edited that down into once commit message and exit the editor,
-the commit will be saved with your new message.
+Как только вы отредактировали это в одно сообщение-описание и вышли из редактора, коммит будет сохранен с вашим новым сообщением-описанием.
 
-If 'edit' is specified, it will do the same thing, but then pause before 
-moving on to the next one and drop you into the command line so you can 
-amend the commit, or change the commit contents somehow.
+Если определен 'edit', то будет делать тоже самое, но приостановится перед тем как двигаться к следующему и выбросит вас в коммандую строку так вы можете изменить коммит, или изменить содержимое коммита некоторым образом.
 
-If you wanted to split a commit, for instance, you would specify 'edit' for
-that commit:
+Если вы хотите разделить коммит, например, вы определите 'edit' для этого коммита:
 
 	pick   fc62e55 added file_size
 	pick   9824bf4 fixed little thing
@@ -104,10 +83,7 @@ that commit:
 	pick   76b9da6 added the apply command
 	pick   c264051 Revert "added file_size" - not implemented correctly
 
-And then when you get to the command line, you revert that commit and create
-two (or more) new ones.  Lets say 21d80a5 modified two files, file1 and file2,
-and you wanted to split them into seperate commits.  You could do this after
-the rebase dropped you to the command line :
+И затем когда вы попадете в командную строку, вы вернетесь к этому коммиту и создадите два (или более) новых. Давайте положим 21d80a5 изменил два файла , file1 и file2, и вы хотите разделить их в разные коммиты. Вы можете сделать это после того как выполнение rebase выкинуло вас в командную строку:
 
 	$ git reset HEAD^
 	$ git add file1
@@ -116,8 +92,6 @@ the rebase dropped you to the command line :
 	$ git commit 'second part of split commit'
 	$ git rebase --continue
 	
-And now instead of 5 commits, you would have 6.
+И теперь вместо 5 коммитов, у вас их 6.
 
-The last useful thing that interactive rebase can do is drop commits for you.
-If instead of choosing 'pick', 'squash' or 'edit' for the commit line, you 
-simply remove the line, it will remove the commit from the history.
+Последняя вещь которая интерактивное выполнение rebase может делать для вас это сбрасывать коммиты.  Если вместо того чтобы выбрать 'pick', 'squash' или 'edit' для линии коммита, вы просто удалите линию, это удалить коммит из истории.

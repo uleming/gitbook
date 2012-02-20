@@ -1,8 +1,6 @@
-## Interactive Adding ##
+## Интерактивное Добавление ##
 
-Interactive Adding is a really nice way of working with and visualizing
-the Git index.  To start it up, simply type 'git add -i'.  Git will show
-you all the modified files you have and their status.
+Интерактивное Добавление это удобный способ работы с и визуализацией директории заморозки Git. Что бы запустить его просто напечатайте 'git add -i'. Git автоматически покажет вам ваши измененные файлы и их статус.
 
 	$>git add -i
 	           staged     unstaged path
@@ -17,14 +15,9 @@ you all the modified files you have and their status.
 	  5: patch	  6: diff	  7: quit	  8: help
 	What now> 
 
-In this case, we can see that there are 5 modified files that have not been
-added to our index yet (unstaged), and even how many lines have been added to
-or removed from each.  It then shows us an interactive menu of what we can
-do in this mode.
+В этом случае, мы можем видеть, что у нас есть 5 измененных файлов котороые еще не добавлены в нашу директорию заморозки (т.е. их статус unstaged), и даже как много строк было добавлено или удалено в каждый файл. Затем покажется интерактивное меню того что мы можем сделать в этом режиме.
 
-If we want to stage the files, we can type '2' or 'u' for the update mode. 
-Then I can specify which files I want to stage (add to the index) by typing
-in the numbers of the files (in this case, 1-4)
+Если мы хотим добавить эти файлы в директорию заморозки, мы можем напечатать '2' или 'u' что бы перейти в режим обновления. Затем Я могу определить какие файлы заморозить (добавить в директорию заморозки) напечатав цифру по числу файлов (в нашем случае, 1-4)
 
 	What now> 2
 	           staged     unstaged path
@@ -42,8 +35,7 @@ in the numbers of the files (in this case, 1-4)
 	  5:    unchanged      +121/-0 text/14_Interactive_Rebasing/0_ Interactive_Rebasing.markdown
 	Update>> 
 
-If I hit enter, I will be taken back to the main menu where I can see that
-the file status has changed:
+Если Я нажму клавишу enter, Я попаду назад в главное меню где Я могу увидеть что статус файла изменился:
 
 	What now> status
 	           staged     unstaged path
@@ -53,9 +45,8 @@ the file status has changed:
 	  4:        +3/-3      nothing script/pdf.rb
 	  5:    unchanged      +121/-0 text/14_Interactive_Rebasing/0_ Interactive_Rebasing.markdown
 
-Now we can see the first four files are staged and the last one is still not.
-This is basically a compressed way to see the same information we see when
-we run 'git status' from the command line:
+Теперь мы можем видеть первые четыре файла заморожены а последний все еще нет. 
+Это по сути краткий способ увидеть ту же информацию которую можно получить выполнив 'git status':
 
 	$ git status
 	# On branch master
@@ -73,20 +64,11 @@ we run 'git status' from the command line:
 	#	modified:   text/14_Interactive_Rebasing/0_ Interactive_Rebasing.markdown
 	#
 
-There are a number of useful things we can do, including unstaging files (3: revert),
-adding untracked files (4: add untracked), and viewing diffs (6: diff). Those
-are all pretty straightforward.  However, there is one command that is pretty
-cool here, which is staging patches (5: patch).
+Есть несколько полезных вещей которые мы можем сделать, включая unstaging(разморозку) файлов (3: reverse - откат), добавление неослеживаемых файлов (4:add untracked - добавление неослеживаемых), и просмотр изменений (6: diff - изменения). Эти значения прямо соотвутствуют тому что они делают. Как бы там ни было есть одна замечательная команда, которая производит заморозку патчей (5: patch).
 
-If you type '5' or 'p' in the menu, git will show you your diff patch by patch 
-(or hunk by hunk) and ask if you want to stage each one.  That way you can 
-actually stage for a commit a part of a file edit.  If you've edited a file
-and want to only commit part of it and not an unfinished part, or commit 
-documentation or whitespace changes seperate from substantive changes, you can
-use 'git add -i' to do so relatively easily.
+Если вы нажмете '5' или 'p' в меню, git покажет вам ваши diff(изменения) патч за патчем и спросит если вы желаете заморозить каждый. Этим способом вы можете в дейстивительности заморзить для коммита часть отредактированного файла. Если вы отредактировали файл и хотите выполнить коммит только той части что изменили пропустив неизмененную часть, или выполнить коммит документации или отделить значительные изменения от просто добавлненных или удаленных пробелов, вы можете выполнять 'git add -i' чтобы легко проделать это.
 
-Here I've staged some changes to the book_index_template.html file, but not all
-of them:
+Здесь Я заморозил некоторые изменения в файле book_index_template.html, но не все из них:
 
 	         staged     unstaged path
 	1:        +4/-0      nothing assets/stylesheets/style.css
@@ -96,9 +78,6 @@ of them:
 	5:    unchanged      +121/-0 text/14_Interactive_Rebasing/0_ Interactive_Rebasing.markdown
 	6:    unchanged       +85/-0 text/15_Interactive_Adding/0_ Interactive_Adding.markdown
 
-When you are done making changes to your index through 'git add -i', you simply
-quit (7: quit) and then run 'git commit' to commit the staged changes.  Remember
-**not** to run 'git commit -a', which will blow away all the careful changes 
-you've just made and simply commit everything.
+Когда вы законичили с фиксацией и заморозкой ваших изменений используя 'git add -i', вы просто завершите работу нажав (7: quit - выход) и затем выполните 'git commit' чтобы закоммитить замороженные изменения. Запомните не **not** выполнять 'git commit -a', так это отменит все сделанные вами аккуратные изменения которые вы только что проделали и просто закоммитит все сразу.
 
 [gitcast:c3_add_interactive]("GitCast #3: Interactive Adding")

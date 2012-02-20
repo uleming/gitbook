@@ -1,47 +1,18 @@
-## Submodules ##
+## Подмодули ##
 
-Large projects are often composed of smaller, self-contained modules.  For
-example, an embedded Linux distribution's source tree would include every
-piece of software in the distribution with some local modifications; a movie
-player might need to build against a specific, known-working version of a
-decompression library; several independent programs might all share the same
-build scripts.
+Большие проекты часто составлены из маленьких, самодостаточных модулей. Например, дерево исходных кодов дистрибутива "Встроенный Linux" включает каждую часть кода в обычного дистрибутива с характерными изменениями; видео проигрыватель возможно требует сборку с только определенной, рабочей версии библиотеки декомпресии; несколько независимых программ возможно пользуются совместно одними скриптами сборки.
 
-With centralized revision control systems this is often accomplished by
-including every module in one single repository.  Developers can check out
-all modules or only the modules they need to work with.  They can even modify
-files across several modules in a single commit while moving things around
-or updating APIs and translations.
+С централизованной системой контроля версий это часто достигается включением каждого модуля в единый репозиторий. Разработчики могут извлекать все модули или только модули необходимые им для работы в данный момент. Они могут даже модифицировать файлы в несколькоих модулях в единый коммит в то время как перемещают файлы или обновляют API и переводы..
 
-Git does not allow partial checkouts, so duplicating this approach in Git
-would force developers to keep a local copy of modules they are not
-interested in touching.  Commits in an enormous checkout would be slower
-than you'd expect as Git would have to scan every directory for changes.
-If modules have a lot of local history, clones would take forever.
+Git не позволяет выполнять частичное извлечение, и дублирование этого подхода в Git заставляет разработчиков держать локальные копии модулей которые они не трогают. Коммиты таких огромных извлечений будут медленнее чем вы ожидаете так как Git должен будет просканировать каждую директорию на наличие изменений. Если модули имеют огромную локальную историю то клонирование может занять вечность.
 
-On the plus side, distributed revision control systems can much better
-integrate with external sources.  In a centralized model, a single arbitrary
-snapshot of the external project is exported from its own revision control
-and then imported into the local revision control on a vendor branch.  All
-the history is hidden.  With distributed revision control you can clone the
-entire external history and much more easily follow development and re-merge
-local changes.
+Одна положительная сторона, распределенные системы контроля версий могут быть граздо легче интегрированы с внешними источниками. В централизованной модели, один произвольный снапшот внешнего проекта экспортирован из его собственной системы контроля версий и затем импортирован в локальную систему контроля версий в ветку поставщика. Вся история скрыта. С распределенной системой контроля версий вы модете склонировать всю внешнуюю историю и и даже больше просто следуя разработке и переслиянию локальных изменений.
 
-Git's submodule support allows a repository to contain, as a subdirectory, a
-checkout of an external project.  Submodules maintain their own identity;
-the submodule support just stores the submodule repository location and
-commit ID, so other developers who clone the containing project
-("superproject") can easily clone all the submodules at the same revision.
-Partial checkouts of the superproject are possible: you can tell Git to
-clone none, some or all of the submodules.
+Поддержка в Git подмодулей позволяет репозиторию содержать, как поддиректорию, извлеченный внешний проект. Подмодули поддерживают свою подлинность; поддержка подмодулей хранит расположение репозитория подмодуля и ID коммита, так что другие разработчики которые клонируют существующий проект ("superproject")могут легко клонировать все подмодули в единой просмотре. Частичные извлечения superproject возможны: вам нужно указать Git клонировать или ничто или некоторые или все подмодули.
 
-The linkgit:git-submodule[1] command is available since Git 1.5.3.  Users
-with Git 1.5.2 can look up the submodule commits in the repository and
-manually check them out; earlier versions won't recognize the submodules at
-all.
+Команда linkgit:git-submodule[1] доступна начиная с версии Git 1.5.3. Пользователи с Git 1.5.2 могут поискать коммиты подмодулей в репозитории и вручную извлечь их; ранние версии Git не узнают подмодули вообще..
 
-To see how submodule support works, create (for example) four example
-repositories that can be used later as a submodule:
+Чтобы увидеть как работает поддержка подмодулей, создайте (для примера) 4 образца репозиториев которые могут быть использованы позже как подмодуль:
 
     $ mkdir ~/git
     $ cd ~/git
@@ -56,7 +27,7 @@ repositories that can be used later as a submodule:
 	    cd ..
     done
 
-Now create the superproject and add all the submodules:
+Теперь создайте superproject и добавте все подмодули:
 
     $ mkdir super
     $ cd super
@@ -66,34 +37,33 @@ Now create the superproject and add all the submodules:
         git submodule add ~/git/$i $i
     done
 
-NOTE: Do not use local URLs here if you plan to publish your superproject!
+Замечание: Не используйте здесь локальные URL если вы планируете опубликовать ваш superproject!
 
-See what files `git-submodule` created:
+Посмотрим какие файлы создал `git-submodule`:
 
     $ ls -a
     .  ..  .git  .gitmodules  a  b  c  d
 
-The `git-submodule add` command does a couple of things:
+Команда выполняте пару вещей `git-submodule add`:
 
-- It clones the submodule under the current directory and by default checks out
-  the master branch.
-- It adds the submodule's clone path to the linkgit:gitmodules[5] file and
-  adds this file to the index, ready to be committed.
-- It adds the submodule's current commit ID to the index, ready to be
-  committed.
+- Она клонирует подмодули под текущей директорией и по умолчанию извлекает
+  ветку master.
+- Она добавляет путь клона подмодуля к файлу linkgit:gitmodules[5] и добавляет
+  этот файл в директорию заморозки, подготавливая все к коммиту.
+- Она добавляет текущий ID коммита подмодуля в директорию заморозки, подготавлива все к коммиту..
 
-Commit the superproject:
+Коммит superproject:
 
 
     $ git commit -m "Add submodules a, b, c and d."
 
-Now clone the superproject:
+Теперь склонируем superproject:
 
     $ cd ..
     $ git clone super cloned
     $ cd cloned
 
-The submodule directories are there, but they're empty:
+Директории подмодуля здесь, но они пустые:
 
     $ ls -a a
     .  ..
@@ -103,9 +73,7 @@ The submodule directories are there, but they're empty:
     -c1536a972b9affea0f16e0680ba87332dc059146 c
     -d96249ff5d57de5de093e6baff9e0aafa5276a74 d
 
-NOTE: The commit object names shown above would be different for you, but they
-should match the HEAD commit object names of your repositories.  You can check
-it by running `git ls-remote ../git/a`.
+Замечание: Имена объектов коммит показанные выше будут отличаться от ваших, но они должны совпадать с именами объектов коммит HEAD ваших репозиториев. Вы можете проверить это выполнив `git ls-remote ../git/a`.
 
 Pulling down the submodules is a two-step process. First run `git submodule
 init` to add the submodule repository URLs to `.git/config`:

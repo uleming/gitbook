@@ -1,35 +1,26 @@
-### Multiway Merge ###
+### Множественное слияние ###
 
-You can merge several heads at one time by simply listing them on the same 
-linkgit:git-merge[1] command.  For instance,
+Вы можете сливать несколько голов в один момент времени просто перечисляя их в той же команде linkgit:git-merge[1]. Например,
 
 	$ git merge scott/master rick/master tom/master
 	
-is the equivalent of:
+что эквивалентно:
 
 	$ git merge scott/master
 	$ git merge rick/master
 	$ git merge tom/master
 
-### Subtree ###
+### Поддерево ###
 
-There are situations where you want to include contents in your project from 
-an independently developed project. You can just pull from the other project 
-as long as there are no conflicting paths.
+Есть ситуации где вы захотите включить содержимое из стороннего проекта в свой собственный. Вы можете просто выполнить pull из другого проекта если нет конфликтующих путей.
 
-The problematic case is when there are conflicting files. Potential 
-candidates are Makefiles and other standard filenames. You could merge 
-these files but probably you do not want to. A better solution for this 
-problem can be to merge the project as its own subdirectory. This is not 
-supported by the recursive merge strategy, so just pulling won't work.
+Проблемный случай когда есть конфиликтующие файлы. Потенциальный кандидаты это Makefiles и другие стандартные файловые имена. Вы можете слить эти файлы но возможно не захотите этого делать. Лучшее решение для этой проблемы это слить проект в его собственную поддиректорию. Это не поддерживается стратегией рекурсивного сливания, но просто выполнить pull не сработает.
 
-What you want is the subtree merge strategy, which helps you in such a situation.
+То что вам нужно это поддерево стратегии слияния, которое поможет вам в таких ситуациях.
 
-In this example, let's say you have the repository at /path/to/B 
-(but it can be an URL as well, if you want). You want to merge the master 
-branch of that repository to the dir-B subdirectory in your current branch.
+В этом примере, давайте скажем у вас есть репозиторий в /path/to/B (но это также может быть и URL если вы пожелаете). Вы хотите слить ветку master этого репозитория в поддиректорию dir-B в вашей текущей ветку.
 
-Here is the command sequence you need:
+Здест последовательность команд которая вам нужна:
 
 	$ git remote add -f Bproject /path/to/B (1)
 	$ git merge -s ours --no-commit Bproject/master (2)
@@ -38,15 +29,11 @@ Here is the command sequence you need:
 	$ git pull -s subtree Bproject master (5)
 	
 
-The benefit of using subtree merge is that it requires less administrative 
-burden from the users of your repository. It works with older 
-(before Git v1.5.2) clients and you have the code right after clone.
+Выгода от использования поддерева слияния это то что оно требует меньше административной заботы от пользователей вашего репозитория. Это работает со старшими (до Git v1.5.2) клиентами и у вас есть код сразу после клонирования.
 
-However if you use submodules then you can choose not to transfer the 
-submodule objects. This may be a problem with the subtree merge.
+Как бы там ни было если вы используете подмодули когда тогда вы можете выбрать не перемещать объекты подмодулей. Этот способ может быть проблемой со слиянием поддерева.
 
-Also, in case you make changes to the other project, it is easier to 
-submit changes if you just use submodules.
+Также, в случае вы сделали изменения в другом проекте, это просто отослать изменения если вы использовали подмодули.
 
 (from [Using Subtree Merge](http://www.kernel.org/pub/software/scm/git/docs/howto/using-merge-subtree.html))
 

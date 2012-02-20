@@ -1,4 +1,4 @@
-## Git on Windows ##
+## Git на Windows ##
 
 (mSysGit)
 

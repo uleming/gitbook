@@ -1,71 +1,50 @@
 ## Git Hooks ##
 
-Hooks are little scripts you can place in $GIT_DIR/hooks directory to trigger
-action at certain points. When git-init is run, a handful example hooks are 
-copied in the hooks directory of the new repository, but by default they are 
-all disabled. To enable a hook, rename it by removing its .sample suffix.
+Хуки это маленькие скрипты которые вы можете положить в директорию $GIT_DIR/hooks и которые будут запускаться по определенному событию. Когда выполняется git-init, удобные образцы хуков копируются в директорию hooks нового репозитория, но по умолчанию они деактивированы. Чтобы активировать хуки, их следует переименовать удалив их расширения .sample.
 
 
 ### applypatch-msg ###
 
     GIT_DIR/hooks/applypatch-msg
     
-This hook is invoked by git-am script. It takes a single parameter, the name 
-of the file that holds the proposed commit log message. Exiting with non-zero
-status causes git-am to abort before applying the patch.
+Этот хук вызывается скриптом git-am. Он берет единственный параметр, имя файла который содержит предлагаемое лог сообщение коммита. Выход с ненулевым статусом прерывает процесс выполнения команды git-am до наложения патча.
 
-The hook is allowed to edit the message file in place, and can be used to 
-normalize the message into some project standard format (if the project has one).
-It can also be used to refuse the commit after inspecting the message file.
-The default applypatch-msg hook, when enabled, runs the commit-msg hook, if the
-latter is enabled.
+Хуку разрешается редактировать файл сообщение, и может быть использован чтобы привести сообщение в некоторый стандартный для проекта формат (если таковой формат имеется).
+Он также может быть использован чтобы отказаться от коммита после проверки файла сообщения.
+Хук по умолчанию applypatch-msg, когда разблокирован, выполняет хук commit-msg, если последний тоже разблокирован.
 
 
 ### pre-applypatch ###
 
     GIT_DIR/hooks/pre-applypatch
 
-This hook is invoked by git-am. It takes no parameter, and is invoked after the
-patch is applied, but before a commit is made.
-If it exits with non-zero status, then the working tree will not be committed
-after applying the patch.
+Этот хук вызывается git-am. Он не берет аргументы,ои вызывается после того как патч уже наложен, но до того как будет выполнен коммит.
+Если он завершается с ненулевым статусом, тогда коммит рабочего дерева не будет выполнен после наложения патча.
 
-It can be used to inspect the current working tree and refuse to make a commit 
-if it does not pass certain test.
-The default pre-applypatch hook, when enabled, runs the pre-commit hook, if the
-latter is enabled.
+Он может быть использован для проверки текущего рабочего дерева и мождет отказыться от выполнения коммита если не пройдет определенные тесты.
+По умолчанию pre-applypatch хук, когда разблокирован, выполняет хук pre-commit, если последний разблокирован.
 
 
 ### post-applypatch ###
 
     GIT_DIR/hooks/post-applypatch
     
-This hook is invoked by 'git-am'.  It takes no parameter,
-and is invoked after the patch is applied and a commit is made.
+Этот хук вызывается 'git-am'. Он не берет параметро, и вызвается после того как наложен патч и выполнен коммит.
 
-This hook is meant primarily for notification, and cannot affect
-the outcome of 'git-am'.
+Этот хук главным образом назначается для уведомления, и не может воздействовать на результат 'git-am'.
 
 
 ### pre-commit ###
  	
     GIT_DIR/hooks/pre-commit
 
-This hook is invoked by 'git-commit', and can be bypassed
-with `\--no-verify` option.  It takes no parameter, and is
-invoked before obtaining the proposed commit log message and
-making a commit.  Exiting with non-zero status from this script
-causes the 'git-commit' to abort.
+Этот хук вызывается 'git-commit', и его вызов может быть отменен с помощью параметра `\--no-verify`. Он не берет параметров, и активируется до поучения предложения лог-сообщения коммита и выполнения коммита. Завершение скрипта с ненулевым статусом прервет выполнение 'git-commit'.
 
-The default 'pre-commit' hook, when enabled, catches introduction
-of lines with trailing whitespaces and aborts the commit when
-such a line is found.
+Дефолтовый 'pre-commit' хук, когда разблокирован, ловит введение строк с окончанием пробелами и прерывает коммит когда такая линия найдена.
 
-All the 'git-commit' hooks are invoked with the environment
-variable `GIT_EDITOR=:` if the command will not bring up an editor
-to modify the commit message.
+Все хуки 'git-commit' вызываются с переменной окружения `GIT_EDITOR=:` если команда откроет редактор чтобы модифоцировать сообщение-описание коммита..
 
-Here is an example of a Ruby script that runs RSpec tests before allowing a commit.
+Здесь пример Ruby скрипта который выполняет тесты RSpec перед тем как позволить выполнить коммит.
 
 	ruby  
 	html_path = "spec_results.html"  
@@ -92,26 +71,15 @@ Here is an example of a Ruby script that runs RSpec tests before allowing a comm
 
     GIT_DIR/hooks/prepare-commit-msg
 
-This hook is invoked by 'git-commit' right after preparing the
-default log message, and before the editor is started.
+Этот хук активируется 'git-commit' сразу после подготовки дефолтного лога сообщения, и перед тем как откроется редактор.
 
-It takes one to three parameters.  The first is the name of the file
-that the commit log message.  The second is the source of the commit
-message, and can be: `message` (if a `-m` or `-F` option was
-given); `template` (if a `-t` option was given or the
-configuration option `commit.template` is set); `merge` (if the
-commit is a merge or a `.git/MERGE_MSG` file exists); `squash`
-(if a `.git/SQUASH_MSG` file exists); or `commit`, followed by
-a commit SHA1 (if a `-c`, `-C` or `\--amend` option was given).
+Он берет от одного до трех параметров. Первый это имя файла который лог сообщение коммита. Второй источник сообщения коммита, и может быть: 'message' (если параметри `-m` или `-F` был передан ); `template` (если параметр `-t` был передан или установлен параметр настройки `commit.template`); `merge` (если коммит это слияние или существует файл `.git/MERGE_MSG`); `squash` (если существует файл `.git/SQUASH_MSG`); или `commit`, со следующим за ним SHA1 значение коммита (если передан параметр `-c`, `-C` или `\--ammend`)..
 
-If the exit status is non-zero, 'git-commit' will abort.
+Если статус окончания работы ненулевой, выполнение 'git-commit' прервется.
 
-The purpose of the hook is to edit the message file in place, and
-it is not suppressed by the `\--no-verify` option.  A non-zero exit
-means a failure of the hook and aborts the commit.  It should not
-be used as replacement for pre-commit hook.
+Цель хуков это отредактировать файл сообщение на месте, и это не подавлено параметром `\--no-verify`. Ненулевой статус окончания выполнения означает сбой хука и прерывание коммита. Он не должен быть использован как заменаа для хука pre-commit.
 
-The sample `prepare-commit-msg` hook that comes with git comments
+Образец хука `prepare-commit-msg` который поставляется с git hook that comes with git comments
 out the `Conflicts:` part of a merge's commit message.
 
 
@@ -356,3 +324,5 @@ to abort.
 
 [Git Hooks](http://www.kernel.org/pub/software/scm/git/docs/githooks.html)
 * http://probablycorey.wordpress.com/2008/03/07/git-hooks-make-me-giddy/
+
+Недопереведено

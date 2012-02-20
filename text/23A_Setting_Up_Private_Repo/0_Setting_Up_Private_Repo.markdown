@@ -1,32 +1,22 @@
-## Setting Up a Private Repository ##
+## Конфигурирование частного репозитория ##
 
-If you need to setup a private repository and want to do so locally,
-rather than using a hosted solution, you have a number of options.
+Если вам потребуется сконфигурировать частный репозиторий и это вам хочется сделать локально, чеIf you need to setup a private repository and want to do so locally, лучше чем использовать сетевое решение, у вас есть множество вариантов.
 
-### Repo Access over SSH ###
+### Доступ в репозиторий через SSH ###
 
-Generally, the easiest solution is to simply use Git over SSH.  If users
-already have ssh accounts on a machine, you can put the git repository
-anywhere on the box that they have access to and let them access it over
-normal ssh logins.  For example, say you have a repository you want to 
-host.  You can export it as a bare repo and then scp it onto your server
-like so:
+Обычно, простейшее решение это использовать Git через SSH. Если пользователи уже имеют ssh аккаунт на машине, вы можете разместить git репозиторий в таком месте куда они имеют доступ так что они могут легко получить доступ к нему через ssh логин. Например, скажем у вас есть репозиторий которым вы хотите руководить. Вы можете экспортировать его как простой репозиторий и затем безопасно скопировать(используя scp) его на ваш сервер след.образом:
 	
 	$ git clone --bare /home/user/myrepo/.git /tmp/myrepo.git
 	$ scp -r /tmp/myrepo.git myserver.com:/opt/git/myrepo.git
 	
-Then someone else with an ssh account on myserver.com can clone via:
+Затем кто-нибудь еще имеющий аккаунт ssh на myserver.com может склонировать репозиторий выполнив:
 
 	$ git clone myserver.com:/opt/git/myrepo.git
 
-Which will simply prompt them for thier ssh password or use thier public key,
-however they have ssh authentication setup.
+Что просто пригласит их ввести ssh пароль или испльзовать их публичный ключ, как бы там ни было мы полагаем что ssh аутентифиция сконфигурирована..
 
-### Multiple User Access using Gitosis ###
+### Множественный Доступ пользователей используя Gitosis ###
 
-If you don't want to setup seperate accounts for every user, you can use
-a tool called Gitosis.  In gitosis, there is an authorized_keys file that
-contains the public keys of everyone authorized to access the repository,
-and then everyone uses the 'git' user to do pushes and pulls.
+Если вы не хотите настраивать отдельные аккаунты для каждого пользователя, вы можете использовать инструмент Gitosis. В gitosis, существует файл authorized_keys который содержит публичные ключи всех авторизированных на доступ к репозиторию пользователей, и потом все они используют пользователя 'git' чтобы выполнять push и pull.
 
-[Installing and Setting up Gitosis](http://www.urbanpuddle.com/articles/2008/07/11/installing-git-on-a-server-ubuntu-or-debian)
+[Установка и Конфигурация Gitosis](http://www.urbanpuddle.com/articles/2008/07/11/installing-git-on-a-server-ubuntu-or-debian)

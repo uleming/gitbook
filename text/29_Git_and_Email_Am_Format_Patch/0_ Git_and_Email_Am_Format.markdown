@@ -1,47 +1,30 @@
-## Git and Email ##
+## Git и эл.почта ##
 
-### Submitting patches to a project ###
+### Отправка патчей в проект ###
 
-If you just have a few changes, the simplest way to submit them may
-just be to send them as patches in email:
+Если вы только что сделали несколько изменений, простейший способ отправить их это оправить их как патчи по эл.почте:
 
-First, use linkgit:git-format-patch[1]; for example:
+Первое выполните linkgit:git-format-patch[1]; например:
 
     $ git format-patch origin
 
-will produce a numbered series of files in the current directory, one
-for each patch in the current branch but not in origin/HEAD.
+это снерерирует некоторое число файлов в текущей директории, один для каждого патча в текущей ветке но не в origin/HEAD.
 
-You can then import these into your mail client and send them by
-hand.  However, if you have a lot to send at once, you may prefer to
-use the linkgit:git-send-email[1] script to automate the process.
-Consult the mailing list for your project first to determine how they
-prefer such patches be handled.
+Затем вы можете импортировать их в вашу почтовую программу и послать их вручную. Если у вас слишком большое количество патчей за раз, предпочтительнее будет выполнить скрипт linkgit:git-send-email[1] чтобы автоматизировать этот процесс. Проконсультируйтесь с почтой рассылки вашего проета чтобы сначала определить каким образом они предпочитают получать патчи.
 
 
-### Importing patches to a project ###
+### Импортирование патчей в проект ###
 
-Git also provides a tool called linkgit:git-am[1] (am stands for
-"apply mailbox"), for importing such an emailed series of patches.
-Just save all of the patch-containing messages, in order, into a
-single mailbox file, say "patches.mbox", then run
+Git также предоставляет инструмент называеющийся linkgit:git-am[1] (am здесь означает "apply mailbox"), для импортирования таких групп патчей полученных по эл.почте. Просто сохраните все сообщения содержищие патчи, в порядке, в единых файл, скажем "patches.mbox", и затем выполните
 
     $ git am -3 patches.mbox
 
-Git will apply each patch in order; if any conflicts are found, it
-will stop, and you can manually fix the conflicts and
-resolve the merge.  (The "-3" option tells
-git to perform a merge; if you would prefer it just to abort and
-leave your tree and index untouched, you may omit that option.)
+Git наложит каждый патч по порядку; если будут найдены какие-либо конфликты, то процесс остановится, и вы можете вручную исправить конфликты и выполнить слияние.  (Параметр "-3" указывает git выполнить слияние; если вы предпочитаете прочто прервать операцию оставив ваше дерево и директорию заморозки нетронутыми, вы можете пропустить этот параметр.)
 
-Once the index is updated with the results of the conflict
-resolution, instead of creating a new commit, just run
+Как только директория заморозки обновлена результатами исправления конфликтов, вместо создиния нового коммита просто выполните
 
     $ git am --resolved
 
-and git will create the commit for you and continue applying the
-remaining patches from the mailbox.
+и git создаст коммит для вас и вы продолжите налагать оставшиеся патчи из эл.почты.
 
-The final result will be a series of commits, one for each patch in
-the original mailbox, with authorship and commit log message each
-taken from the message containing each patch.
+Окончательный результат будет группа коммитов, один коммит на каждый патч из эл.почты, вместе с авторством и лог сообщение коммита каждое будет взято из сообщения содержашего каждый патч.

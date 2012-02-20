@@ -1,8 +1,6 @@
 ## The Git Index ##
 
-The index is a binary file (generally kept in .git/index) containing a
-sorted list of path names, each with permissions and the SHA1 of a blob
-object; linkgit:git-ls-files[1] can show you the contents of the index:
+Индекс это бинарный файл (обычно содержится в .git/index) содержащий отсортированный список имен путей, каждый с разрешениями и SHA1 значениями объекта блоба; linkgit:git-ls-files[1] покажет вам содержимое индекса:
 
     $ git ls-files --stage
     100644 63c918c667fa005ff12ad89437f2fdc80926e21c 0	.gitignore
@@ -15,37 +13,21 @@ object; linkgit:git-ls-files[1] can show you the contents of the index:
     100644 2ade97b2574a9f77e7ae4002a4e07a6a38e46d07 0	xdiff/xutils.c
     100644 d5de8292e05e7c36c4b68857c1cf9855e3d2f70a 0	xdiff/xutils.h
 
-Note that in older documentation you may see the index called the
-"current directory cache" or just the "cache".  It has three important
-properties:
+Замечание, в старой документации вы возможно встретите определение индекса 
+"current directory cache(кэш текущей директории)" или просто "cache(кэш)".  Он имеет три важдых свойства:
 
-1. The index contains all the information necessary to generate a single
-    (uniquely determined) tree object.
+1. Индекс содержит всю информацию необходимую чтобы сгенерировать один
+    (уникальный) объект дерево.
 
-    For example, running linkgit:git-commit[1] generates this tree object
-    from the index, stores it in the object database, and uses it as the
-    tree object associated with the new commit.
+    Например, выполнение linkgit:git-commit[1] сгенерирует этот объект дерево из индекса, сохранит его в базе данных объектов, и использует его как объект дерево связанный с новым коммитом.
 
-2. The index enables fast comparisons between the tree object it defines
-    and the working tree.
+2. Индекс разрешает быстрое сравнение между объектом дерево которое определяет
+    и рабочим деревом.
 
-    It does this by storing some additional data for each entry (such as
-    the last modified time).  This data is not displayed above, and is not
-    stored in the created tree object, but it can be used to determine
-    quickly which files in the working directory differ from what was
-    stored in the index, and thus save git from having to read all of the
-    data from such files to look for changes.
+    Он делает сохраняя некоторые дополнительные данные для каждой записи (такой как время последней модификации). Эти данные не отображаются выше, и не хранятся в созданном объекте дерево, но они могут быть использованы чтобы определить быстро какие файлы в рабочей директории отличаются от того что сохранено в индексе, и поэтому предохраняет git от постоянного чтения всех даннях из таких файлов в поисках изменений.
 
-3. It can efficiently represent information about merge conflicts
-    between different tree objects, allowing each pathname to be
-    associated with sufficient information about the trees involved that
-    you can create a three-way merge between them.
+3. Он может эффективно предствить информацию о конфликтах при слиянии между различными объектами дерево, позволяя каждому пути быть связанным с необходимой информацией о деревью вовлеченных который вы создаей трех путевой слияние между ними.
 
-    During a merge, the index can
-    store multiple versions of a single file (called "stages").  The third
-    column in the linkgit:git-ls-files[1] output above is the stage
-    number, and will take on values other than 0 for files with merge
-    conflicts.
+    В процессе слияния, индекс может хранить множество версий одного файла (называемого "stages"). Третья колонка в выводе linkgit:git-ls-files[1] выше это номер stage, и берет значения отличные от 0 для файлов с конфликтами при слиянии.
 
-The index is thus a sort of temporary staging area, which is filled with
-a tree which you are in the process of working on.
+Индекс это своего рода временная область заморозки, которая заполняется деревом над котором вы в процессе работы.

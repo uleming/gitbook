@@ -1,16 +1,10 @@
 ## Raw Git ##
 
-Here we will take a look at how to manipulate git at a more raw level, in
-case you would like to write a tool that generates new blobs, trees or commits 
-in a more artificial way.  If you want to write a script that uses more low-level
-git plumbing to do something new, here are some of the tools you'll need.
+Здесь мы взглянем на то как манипулировать git на более низком уровне, в случае если вы пожелаете написать инструмент генерирующий новые блобы, деревья, или коммиты более искуственным методом. Если вы захотите написать скрипт который использует более низкоуровневое  git pluming  чтобы проделать что то новое, здесь некоторые инструменты нужные вам.
 
-### Creating Blobs ###
+### Создание блобов ###
 
-Creating a blob in your Git repository and getting a SHA back is pretty easy.
-The linkgit:git-hash-object[1] command is all you'll need.  To create a blob
-object from an existing file, just run it with the '-w' option (which tells it
-to write the blob, not just compute the SHA).
+Создание блобов в вашем Git репозитории и получение SHA значения легко. Команда linkgit:git-hash-object[1] это все что вам нужно. Чтобы создать объект блоб из существующего файла, просто выполните ее с параметром '-w' (который говорит ей записпть блоб, а не просто вычислять SHA).
 
 	$ git hash-object -w myfile.txt
 	6ff87c4664981e4397625791c8ea3bbb5f2279a3
@@ -18,38 +12,31 @@ to write the blob, not just compute the SHA).
 	$ git hash-object -w myfile2.txt
 	3bb0e8592a41ae3185ee32266c860714980dbed7
 
-The STDOUT output of the command will the the SHA of the blob that was created.
+В выводе команды вы увидите SHA значение блоба который был создан..
 
-### Creating Trees ###
+### Создание деревьев ###
 
-Now lets say you want to create a tree from your new objects. 
-The linkgit:git-mktree[1] command makes it pretty simple to generate new
-tree objects from linkgit:git-ls-tree[1] formatted output.  For example, if
-you write the following to a file named '/tmp/tree.txt' :
+Теперь давайте положим вы хотите создать дерево из ваших новыз объектов. Команда linkgit:git-mktree[1] делает это просто генерируя новый объект дерево из linkgit:git-ls-tree[1] форматированного вывода. Например, если вы запсали следующее в файл под именем '/tmp/tree.txt' :
 
 	100644 blob 6ff87c4664981e4397625791c8ea3bbb5f2279a3	file1
 	100644 blob 3bb0e8592a41ae3185ee32266c860714980dbed7	file2
 
-and then piped that through the linkgit:git-mktree[1] command, Git will
-write a new tree to the object database and give you back the new sha of that
-tree.
+и затем пропустили это через команду linkgit:git-mktree[1], Git запишет новое дерево в базу данных объектов и выдаст вам новое sha значение этого дерева.
 
 	$ cat /tmp/tree.txt | git mk-tree
 	f66a66ab6a7bfe86d52a66516ace212efa00fe1f
 
-Then, we can take that and make it a subdirectory of yet another tree, and so 
-on.  If we wanted to create a new tree with that one as a subtree, we just 
-create a new file (/tmp/newtree.txt) with our new SHA as a tree in it:
+Затем, мы можем взять это и сделать это поддиректорией еще одного другого дерева, и так далее. Если мы хотим создать новое дерево с этим как поддеревом, мы просто созданим новый файл (/tmp/newtree.txt) с нашим новым SHA как дерево в нем:
 
 	100644 blob 6ff87c4664981e4397625791c8ea3bbb5f2279a3	file1-copy
 	040000 tree f66a66ab6a7bfe86d52a66516ace212efa00fe1f	our_files
 
-and then use linkgit:git-mk-tree[1] again:
+и затем выполним linkgit:git-mk-tree[1] снова:
 
 	$ cat /tmp/newtree.txt | git mk-tree
 	5bac6559179bd543a024d6d187692343e2d8ae83
 
-And we now have an artificial directory structure in Git that looks like this:
+И мы теперь имеем искуственную структуру директорий в Git которая выглядет следующим образом:
 
 	.
 	|-- file1-copy
@@ -59,20 +46,14 @@ And we now have an artificial directory structure in Git that looks like this:
 
 	1 directory, 3 files
 	
-without that structure ever having actually existed on disk.  Plus, we have
-a SHA (<code>5bac6559</code>) that points to it.
+причем это структура никогда в действительности не существовала на диске. Плюс, у нас есть SHA (<code>5bac6559</code>) которое указывает на нее.
 
-### Rearranging Trees ###
+### Перестроить деревья ###
 
-We can also do tree manipulation by combining trees into new structures using
-the index file.  As a simple example, let's take the tree we just created and
-make a new tree that has two copies of our <code>5bac6559</code> tree in it
-using a temporary index file. (You can do this by resetting the GIT_INDEX_FILE
-environment variable or on the command line)
+Мы также можем проделать манипуляции с объединением деревьев в новую структуру используя файл индекс. Как простейший пример, давайте возьмем дерево которое мы только что создали и сделаем новое дерево которое имеет две копии нашего <code>5bac6559</code> дерева в нем используя временный файл индекс. (Вы можете проделать это сбросив переменную окружения GIT_INDEX_FILE или в командной строке)
 
-First, we read the tree into our index file under a new prefix using the
-linkgit:git-read-tree[1] command, and then write the index contents as 
-a tree using the linkgit:git-write-tree[1] command:
+Первое, мы читаем дерево в наш индекс файл под новым префиксов испльзуя команду
+linkgit:git-read-tree[1], и затем запишем содержимое индекса как дерево используя команду linkgit:git-write-tree[1]:
 
 	$ export GIT_INDEX_FILE=/tmp/index
 	$ git read-tree --prefix=copy1/  5bac6559
@@ -84,16 +65,11 @@ a tree using the linkgit:git-write-tree[1] command:
 	040000 tree 5bac6559179bd543a024d6d187692343e2d8ae83	copy1
 	040000 tree 5bac6559179bd543a024d6d187692343e2d8ae83	copy2
 	
-So now we can see that we've created a new tree just from index manipulation.
-You can also do interesting merge operations and such in a temporary index
-this way - see the linkgit:git-read-tree[1] docs for more information.
+Теперь мы видим что мы создали новое дерево просто манипулируя индексом. Вы также можете делать интересные операции слияния и тому подобное в временном индексе. Просмотрите документацию linkgit:git-read-tree[1] чтобы получить больше подробностей.
 
-### Creating Commits ###
+### Создание коммитов ###
 
-Now that we have a tree SHA, we can create a commit object that points to it.
-We can do this using the linkgit:git-commit-tree[1] command.  Most of the data
-that goes into the commit has to be set as environment variables, so you'll want
-to set the following:
+Теперь когда у нас есть SHA дерева, мы можем создать объект коммит на него указывает. Мы можем проделать это используя команду linkgit:git-commit-tree[1]. Больщинство данных которые идут в коммит должны быть установленны как переменные окружения, так что вам потребуется установить их:
 
 	GIT_AUTHOR_NAME
 	GIT_AUTHOR_EMAIL
@@ -102,23 +78,16 @@ to set the following:
 	GIT_COMMITTER_EMAIL
 	GIT_COMMITTER_DATE
 
-Then you will need to write your commit message to a file or somehow pipe it
-into the command through STDIN. Then, you can create your commit object 
-based on the tree sha we have.
+Затем вам потребуется записать ваше сообщение-описание коммита в файл или каким либо образои передать эту информацию в команду через STDIN. Затем, вы можете создать ваш коммит основываясь на sha дерева которе есть нас.
 
 	$ git commit-tree bb2fa < /tmp/message
 	a5f85ba5875917319471dfd98dfc636c1dc65650
 	
-If you want to specify one or more parent commits, simply add the shas on the
-command line with a '-p' option before each.  The SHA of the new commit object
-will be returned via STDOUT.
+Если вы хотите определить один или более родителей коммита, просто добавте sha значения в командную строку вместе с параметром '-p' перед каждым из них. SHA нового объекта коммита будет выведено как результат работы команды..
 
-### Updating a Branch Ref ###
+### Обновление ссылки ветки ###
 
-Now that we have a new commit object SHA, we can update a branch to point to
-it if we want to.  Lets say we want to update our 'master' branch to point to
-the new commit we just created - we would use the linkgit:git-update-ref[1]
-command:
+Теперь у нас есть SHA значение нового объекта коммит, и мы можем обновить ветку чтобы она указывала него если мы так хотим. Давайте скажем что мы хотим обновить нашу ветку 'master' так чтобы она указывала на новый коммит который мы только что создали - мы используем команду linkgit:git-update-ref[1] для этого:
 
 	$ git update-ref refs/heads/master a5f85ba5875917319471dfd98dfc636c1dc65650
 

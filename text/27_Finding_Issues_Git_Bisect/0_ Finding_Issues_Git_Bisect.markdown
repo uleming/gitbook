@@ -1,10 +1,6 @@
-## Finding Issues - Git Bisect ##
+## Поиск проблем - Git в разрезе ##
 
-Suppose version 2.6.18 of your project worked, but the version at
-"master" crashes.  Sometimes the best way to find the cause of such a
-regression is to perform a brute-force search through the project's
-history to find the particular commit that caused the problem.  The
-linkgit:git-bisect[1] command can help you do this:
+Предположим версия 2.6.18 вашего проекта работала, но версия в ветке master падает. Иногда самый лучший способ найти причину этой регрессии(проблемы) это выполнить брут-форс поиск сквозь всей истории проекта чтобы найти определенный коммит который вызывает неполадку. Команда linkgit:git-bisect[1] поможет вам в этом:
 
     $ git bisect start
     $ git bisect good v2.6.18
@@ -12,44 +8,26 @@ linkgit:git-bisect[1] command can help you do this:
     Bisecting: 3537 revisions left to test after this
     [65934a9a028b88e83e2b0f8b36618fe503349f8e] BLOCK: Make USB storage depend on SCSI rather than selecting it [try #6]
 
-If you run "git branch" at this point, you'll see that git has
-temporarily moved you to a new branch named "bisect".  This branch
-points to a commit (with commit id 65934...) that is reachable from
-"master" but not from v2.6.18.  Compile and test it, and see whether
-it crashes.  Assume it does crash.  Then:
+Если вы выполните "git branch" в этот момент, вы увидите что git переместил вас временно в новую ветку с имененм "bisect". Эта ветка указывает на коммит (коммит с id 65934...) который можно достичь из ветки "master" но не из v2.6.18.  Скомпилируйте и протестируйте его, и узнайте падает ли программа. Положим что да, тогда:
 
     $ git bisect bad
     Bisecting: 1769 revisions left to test after this
     [7eff82c8b1511017ae605f0c99ac275a7e21b867] i2c-core: Drop useless bitmaskings
 
-checks out an older version.  Continue like this, telling git at each
-stage whether the version it gives you is good or bad, and notice
-that the number of revisions left to test is cut approximately in
-half each time.
+Извлекает старую версию. Продолжайте в этом духе, уведомляя git на каждом этапе что версия которую вы пробуете нормальная или проблемная, и заметьте что число повторных просмотров оставшихся для тестирования уменьшается приблизительно наполовину каждый раз.
 
-After about 13 tests (in this case), it will output the commit id of
-the guilty commit.  You can then examine the commit with
-linkgit:git-show[1], find out who wrote it, and mail them your bug
-report with the commit id.  Finally, run
+После приблизительно 13 тестов (в этом случае), вы получите вывод id коммита виновника неполадок. Вы можете затем исследовать коммит с помощью linkgit:git-show[1], чтобы найти того что выполнил его, и написать отчет об ошибке с id коммита. В заключении выполните
 
     $ git bisect reset
 
-to return you to the branch you were on before and delete the
-temporary "bisect" branch.
+чтобы вернуть вас в ветку в которой вы были до этого и удалить временную ветку "bisect".
 
-Note that the version which git-bisect checks out for you at each
-point is just a suggestion, and you're free to try a different
-version if you think it would be a good idea.  For example,
-occasionally you may land on a commit that broke something unrelated;
-run
+Заметьте что версия которую git-bisect извлекает для вас на каждом этапе просто предложение, и вы свободны попробовать другую версию если вы думаете это хорошая идея. Например, иногда вы приземлить коммит который ломает что то неопределенное; выполните
 
     $ git bisect visualize
 
-which will run gitk and label the commit it chose with a marker that
-says "bisect".  Choose a safe-looking commit nearby, note its commit
-id, and check it out with:
+которая выполнит  gitk и укажет выбранный ею коммит маркером который говорит "bisect". Выберите безопасно выглядящий коммит рядом, отметьте id этого коммита, и проверте его с помощью:
 
     $ git reset --hard fb47ddb2db...
 
-then test, run "bisect good" or "bisect bad" as appropriate, and
-continue.
+затем протестируйте, выполните "bisect good" или "bisect bad" как более подходящее, и продолжите.
