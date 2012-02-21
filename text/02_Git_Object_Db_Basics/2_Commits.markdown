@@ -1,13 +1,10 @@
-### Commit Object ###
+### Объекты коммит ###
 
-The "commit" object links a physical state of a tree with a description
-of how we got there and why. 
+Объект "коммит" связывает физическое состояние дерева с описпнием того каким образом мы пришли к этому и почему. 
 
 [fig:object-commit]
 
-You can use the --pretty=raw option to
-linkgit:git-show[1] or linkgit:git-log[1] to examine your favorite
-commit:
+Вы можете использовать параметр --pretty=raw с linkgit:git-show[1] или linkgit:git-log[1] чтобы исследовать коммит:
 
     $ git show -s --pretty=raw 2be7fcb476
     commit 2be7fcb4764f2dbcee52635b91fedb1b3dcf7ab4
@@ -20,27 +17,19 @@ commit:
 
         Signed-off-by: Junio C Hamano <gitster@pobox.com>
 
-As you can see, a commit is defined by:
+Как вы это видите коммит определяется:
 
-- a **tree**: The SHA1 name of a tree object (as defined below), representing
-  the contents of a directory at a certain point in time.
-- **parent(s)**: The SHA1 name of some number of commits which represent the
-  immediately previous step(s) in the history of the project.  The
-  example above has one parent; merge commits may have more than
-  one.  A commit with no parents is called a "root" commit, and
-  represents the initial revision of a project.  Each project must have
-  at least one root.  A project can also have multiple roots, though
-  that isn't common (or necessarily a good idea).
+- **дерево**: SHA1 имя объекта дерево (как определено ниже), представляет
+  непосредственно предыдущий шаг(и) в определенный момент времени.
+- **родитель(и)**: SHA1 имя некоторого числа коммитов которые представляют 
+  собой непосредственнцю предыдущую шаг(и) в истории проекта. Пример выше имеет одного родителя; коммиты слияния могут иметь более чем одного родителя. Коммит без родителей называется "root (корневой)" коммит, и представляет собой начальное состояние проекта. Каждый проект должен иметь по крайней мере один корневой коммит. Проект может также иметь множество корней, хотя это не общий случай (или не обязательно хорошая идея).
 - an **author**: The name of the person responsible for this change, together
   with its date.
-- a **committer**: The name of the person who actually created the commit,
-  with the date it was done.  This may be different from the author; for
-  example, if the author wrote a patch and emailed it to another person who
-  used the patch to create the commit.
-- a **comment** describing this commit.
+- **коммитер**: имя разработчика которая создала этот коммит, вместе с датой
+  этого события. Оно(имя) может отличаться от имени автора; например в случае, если автор написал патч и отправил его по эл.почте другому разработчику который наложил патч и выполнил коммит.
+- **комментарий** описывающий этот коммит.
 
-Note that a commit does not itself contain any information about what
-actually changed; all changes are calculated by comparing the contents
+Заметьте что коммит сам по себе не содержит никакой информации о том что изменилось; все изменения вычистляются в сравнении содержимого дерева на которое ссылается этот коммит di all changes are calculated by comparing the contents
 of the tree referred to by this commit with the trees associated with
 its parents.  In particular, git does not attempt to record file renames
 explicitly, though it can identify cases where the existence of the same
