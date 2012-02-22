@@ -1,4 +1,22 @@
+Это перевод англ.версии книги
 == The Community Git Book ==
+оригинал книги легко погулить по ее заголовку
+на данный момент подготовлено:
+1-10 глава перевод окончен
+10-50 только черновой перевод 
+
+если кто решит сгенерировать html версию самостоятельно
+то чтобы избежать траты времени установите в след.порядке:
+(это выполнялось на убунту но на других дистрибутивах будет аналогично я думаю)
+sudo apt-get install ruby1.8 ruby1.8-dev rubygems
+sudo apt-get install discount libonig-dev
+sudo gem install rake builder ultraviolet
+sudo gem install ultraviolet 
+а вот rdiscount я установил из стороннего источника с github
+
+
+
+
 
 This is an attempt to make a comprehensive, easy to follow Git learning
 resource to be hosted on the main Git website.
