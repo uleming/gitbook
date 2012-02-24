@@ -1,7 +1,7 @@
 ## Глоссарий ##
 
 Здесь даны определения некоторых терминов использованых в среде Git.  
-Все эти термины польностью могут быть скопированы из
+Все эти термины полностью могут быть скопированы из
 [Git Glossary](http://www.kernel.org/pub/software/scm/git/docs/gitglossary.html).  
 
 
@@ -23,11 +23,11 @@ _bare repository_
     and no other files are present and checked out. Usually publishers of
     public repositories make bare repositories available.
 
-_blob object_
+_объект типа блоб_
 
 >   Untyped object, e.g. the contents of a file.
 
-_branch_
+_ветка_
 
 >   A "branch" is an active line of development.  The most recent
     commit on a branch is referred to as the tip of
@@ -39,9 +39,9 @@ _branch_
     associated with just one of them (the "current" or "checked out"
     branch), and HEAD points to that branch.
 
-_cache_
+_кэш_
 
->   Obsolete for: index.
+>   устаревшее для: индекс
 
 _chain_
 

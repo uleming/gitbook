@@ -3,3 +3,5 @@
 ContentDistribution
 
 TicGit
+
+Примечание: переводить нечего

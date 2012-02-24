@@ -1,27 +1,26 @@
-## Git Hooks ##
+## Хуки Git ##
 
-Хуки это маленькие скрипты которые вы можете положить в директорию $GIT_DIR/hooks и которые будут запускаться по определенному событию. Когда выполняется git-init, удобные образцы хуков копируются в директорию hooks нового репозитория, но по умолчанию они деактивированы. Чтобы активировать хуки, их следует переименовать удалив их расширения .sample.
+Хуки это короткие скрипты которые вы можете разместить в директории $GIT_DIR/hooks и которые будут запускаться по определенному событию. Когда выполняется git-init, то набор хуков идущих в комплекте с git копируется в директорию hooks нового репозитория, но по умолчанию они деактивированы. Чтобы активировать хуки, их следует переименовать, удалив их расширение .sample.
 
 
 ### applypatch-msg ###
 
     GIT_DIR/hooks/applypatch-msg
     
-Этот хук вызывается скриптом git-am. Он берет единственный параметр, имя файла который содержит предлагаемое лог сообщение коммита. Выход с ненулевым статусом прерывает процесс выполнения команды git-am до наложения патча.
+Этот хук вызывается скриптом git-am. Он принимает единственный параметр - имя файла, который содержит лог сообщение коммита. Выход с ненулевым статусом прерывает процесс выполнения команды git-am до наложения патча.
 
-Хуку разрешается редактировать файл сообщение, и может быть использован чтобы привести сообщение в некоторый стандартный для проекта формат (если таковой формат имеется).
-Он также может быть использован чтобы отказаться от коммита после проверки файла сообщения.
-Хук по умолчанию applypatch-msg, когда разблокирован, выполняет хук commit-msg, если последний тоже разблокирован.
+Хуку разрешается редактировать файл сообщение, и он может быть использован чтобы составить сообщение в особом формате, стандартном для проекта(если таковой формат имеется). Он также может быть использован чтобы отказаться от коммита после проверки файла сообщения.
+Хук по умолчанию applypatch-msg, когда разблокирован, запускает хук commit-msg, если последний разблокирован.
 
 
 ### pre-applypatch ###
 
     GIT_DIR/hooks/pre-applypatch
 
-Этот хук вызывается git-am. Он не берет аргументы,ои вызывается после того как патч уже наложен, но до того как будет выполнен коммит.
+Этот хук вызывается git-am. Он не берет аргументы, и вызывается после того как патч уже наложен, но до того как будет выполнен коммит.
 Если он завершается с ненулевым статусом, тогда коммит рабочего дерева не будет выполнен после наложения патча.
 
-Он может быть использован для проверки текущего рабочего дерева и мождет отказыться от выполнения коммита если не пройдет определенные тесты.
+Он может быть использован для проверки текущего рабочего дерева и может отказать в выполнении коммита если оно не пройдет определенные тесты.
 По умолчанию pre-applypatch хук, когда разблокирован, выполняет хук pre-commit, если последний разблокирован.
 
 
@@ -29,20 +28,20 @@
 
     GIT_DIR/hooks/post-applypatch
     
-Этот хук вызывается 'git-am'. Он не берет параметро, и вызвается после того как наложен патч и выполнен коммит.
+Этот хук вызывается 'git-am'. Он не берет параметров, и вызывается после того как наложен патч и выполнен коммит.
 
-Этот хук главным образом назначается для уведомления, и не может воздействовать на результат 'git-am'.
+Назначение хука главным образом уведомление, и не может влиять на последствия выполнения 'git-am'.
 
 
 ### pre-commit ###
  	
     GIT_DIR/hooks/pre-commit
 
-Этот хук вызывается 'git-commit', и его вызов может быть отменен с помощью параметра `\--no-verify`. Он не берет параметров, и активируется до поучения предложения лог-сообщения коммита и выполнения коммита. Завершение скрипта с ненулевым статусом прервет выполнение 'git-commit'.
+Этот хук вызывается 'git-commit', и его вызов может быть отменен с помощью параметра `\--no-verify`. Он не берет параметров, и активируется до получения предложения лог-сообщения коммита и выполнения коммита. Завершение скрипта с ненулевым статусом прервет выполнение 'git-commit'.
 
-Дефолтовый 'pre-commit' хук, когда разблокирован, ловит введение строк с окончанием пробелами и прерывает коммит когда такая линия найдена.
+Дефолтовый 'pre-commit' хук, когда разблокирован, ловит ввод строк с пробелами в окончании и прерывает коммит когда такая строка найдена.
 
-Все хуки 'git-commit' вызываются с переменной окружения `GIT_EDITOR=:` если команда откроет редактор чтобы модифоцировать сообщение-описание коммита..
+Все хуки 'git-commit' вызываются с переменной окружения `GIT_EDITOR=:` если команда не вызывает редактор чтобы модифицировать сообщение-описпние коммита.
 
 Здесь пример Ruby скрипта который выполняет тесты RSpec перед тем как позволить выполнить коммит.
 
@@ -73,121 +72,84 @@
 
 Этот хук активируется 'git-commit' сразу после подготовки дефолтного лога сообщения, и перед тем как откроется редактор.
 
-Он берет от одного до трех параметров. Первый это имя файла который лог сообщение коммита. Второй источник сообщения коммита, и может быть: 'message' (если параметри `-m` или `-F` был передан ); `template` (если параметр `-t` был передан или установлен параметр настройки `commit.template`); `merge` (если коммит это слияние или существует файл `.git/MERGE_MSG`); `squash` (если существует файл `.git/SQUASH_MSG`); или `commit`, со следующим за ним SHA1 значение коммита (если передан параметр `-c`, `-C` или `\--ammend`)..
+Он берет от одного до трех параметров. Первый это имя файла содержащего сообщение-описание коммита. Второй источник сообщения коммита, и может быть: 'message' (если параметри `-m` или `-F` был передан ); `template` (если параметр `-t` был передан или установлен параметр настройки `commit.template`); `merge` (если коммит это слияние или существует файл `.git/MERGE_MSG`); `squash` (если существует файл `.git/SQUASH_MSG`); или `commit`, со следующим за ним SHA1 значением коммита (если передан параметр `-c`, `-C` или `\--ammend`)..
 
 Если статус окончания работы ненулевой, выполнение 'git-commit' прервется.
 
-Цель хуков это отредактировать файл сообщение на месте, и это не подавлено параметром `\--no-verify`. Ненулевой статус окончания выполнения означает сбой хука и прерывание коммита. Он не должен быть использован как заменаа для хука pre-commit.
+Цель хука отредактировать файл сообщение на месте, и это не подавляется передачей параметра `\--no-verify`. Ненулевой статус окончания выполнения означает сбой хука и прерывание коммита. Он не должен быть использован как замена хука pre-commit.
 
-Образец хука `prepare-commit-msg` который поставляется с git hook that comes with git comments
-out the `Conflicts:` part of a merge's commit message.
+Образец хука `prepare-commit-msg` который поставляется с комментариями git вне части `Conflicts:` сообщения описания коммита слияния.
 
 
 ### commit-msg ###
 
     GIT_DIR/hooks/commit-msg
 
-This hook is invoked by 'git-commit', and can be bypassed
-with `\--no-verify` option.  It takes a single parameter, the
-name of the file that holds the proposed commit log message.
-Exiting with non-zero status causes the 'git-commit' to
-abort.
+Этот хук вызывается 'git-commit', и может быть обойден с помощью параметра `\--no-verify`. Он берет единственный параметр, имя файла который содержит предполагаемое сообщение описание коммита. Выход с ненулевым статусом прерывает выполнение 'git-commit'.
 
-The hook is allowed to edit the message file in place, and can
-be used to normalize the message into some project standard
-format (if the project has one). It can also be used to refuse
-the commit after inspecting the message file.
+Этому хуку позоволяется редактировать файл сообщение на месте, и он может быть испльзован чтобы привести сообщение в стандартный вид для проекта(если таковой имеется). Он также может быть использован чтобы отказаться от коммита после проверки файла сообщения.
 
-The default 'commit-msg' hook, when enabled, detects duplicate
-"Signed-off-by" lines, and aborts the commit if one is found.
+Хук по умолчания 'commit-msg', когда активирован, определяет дубликаты строк
+"Signed-off-by", и прерывает коммит если найдет таковую.
 
 
 ### post-commit ###
 
     GIT_DIR/hooks/post-commit
 
-This hook is invoked by 'git-commit'.  It takes no
-parameter, and is invoked after a commit is made.
+Этот хук вызывается 'git-commit'. Он не берет параметров, о вызывается после того как коммит уже завершен.
 
-This hook is meant primarily for notification, and cannot affect
-the outcome of 'git-commit'.
+Назначение этого хука главным образом уведомление, и он не может повлиять на результат работы 'git-commit'.
 
 
 ### pre-rebase ###
 
     GIT_DIR/hooks/pre-rebase
 
-This hook is called by 'git-rebase' and can be used to prevent a branch
-from getting rebased.
+Этот хук вызывается 'git-rebase' и может быть использован чтобы предотвратить выполнение операции ребазирования в ветке.
 
 
 ### post-checkout ###
 
     GIT_DIR/hooks/post-checkout
 
-This hook is invoked when a 'git-checkout' is run after having updated the
-worktree.  The hook is given three parameters: the ref of the previous HEAD,
-the ref of the new HEAD (which may or may not have changed), and a flag
-indicating whether the checkout was a branch checkout (changing branches,
-flag=1) or a file checkout (retrieving a file from the index, flag=0).
-This hook cannot affect the outcome of 'git-checkout'.
+Этот хук вызывается когда 'git-checkout' выполняется после обновления рабочего дерева. Хук требуется три параметра: ссылка на предыдущую HEAD, ссылка на новую HEAD (которая возможно была изменена а возможно и нет), и флаг показывающий была ли операция checkout с веткой (смена ветки, flag=1) или она была проведена над файлом (получение файла из индекса, flag=0). Этот хук не может повлиять на результат 'git-checkout'.
 
-This hook can be used to perform repository validity checks, auto-display
-differences from the previous HEAD if different, or set working dir metadata
-properties.
+Этот хук может быть использован чтобы выполнять проверки правильности репозитория валидность, автоматический показ отличий от предыдущей HEAD если отличается, или набор свойств метаданных рабочей директории.
 
 
 ### post-merge ###
 
     GIT_DIR/hooks/post-merge
 
-This hook is invoked by 'git-merge', which happens when a 'git-pull'
-is done on a local repository.  The hook takes a single parameter, a status
-flag specifying whether or not the merge being done was a squash merge.
-This hook cannot affect the outcome of 'git-merge' and is not executed,
-if the merge failed due to conflicts.
+Этот хук вызывается 'git-merge', что происходит когда 'git-pull' закончил свою работу в локальном репозитории. Хук берет единственный аргумент, флаг статуса определяющий было или нет выполненное слияние squash слиянием. Этот хук не может влиять на результат 'git-merge' и не выполняется если слияние потерпело неудачу вследствии конфликтов.
 
-This hook can be used in conjunction with a corresponding pre-commit hook to
-save and restore any form of metadata associated with the working tree
-(eg: permissions/ownership, ACLS, etc).  See contrib/hooks/setgitperms.perl
-for an example of how to do this.
+Этот хук может быть использован совместно с соотвествующим хуком pre-commit чтобы сохранять и восстанавливать метаданные ассоциированные с рабочим деревом в любой форме (в т.ч. разрешения/владение, ACLS и т.д.) Просмотрите contrib/hooks/setgitperms.perl чтобы на примере изучить как проделывать это.
 
 
 ### pre-receive ###
 
     GIT_DIR/hooks/pre-receive
 
-This hook is invoked by 'git-receive-pack' on the remote repository,
-which happens when a 'git-push' is done on a local repository.
-Just before starting to update refs on the remote repository, the
-pre-receive hook is invoked.  Its exit status determines the success
-or failure of the update.
+Этот хук вызывается 'git-receive-pack' на удаленный репозиторий, что происходит когда заканчивается выполнение 'git-push' на локальном репозитории.
+Сразу после начала обновления refs(сслылок) на удаленном репозитории, вызывается хук pre-receive. Его статус выхода определяет успех или неудачу обновления.
 
-This hook executes once for the receive operation. It takes no
-arguments, but for each ref to be updated it receives on standard
-input a line of the format:
+Этот хук выполняется однажды для операции получения. Он не принимает аргументов, но чтобы обновить каждую ref(ссылку) он принимает в стандартный ввод строку след.формата:
 
   <old-value> SP <new-value> SP <ref-name> LF
 
-where `<old-value>` is the old object name stored in the ref,
-`<new-value>` is the new object name to be stored in the ref and
-`<ref-name>` is the full name of the ref.
-When creating a new ref, `<old-value>` is 40 `0`.
+где `<old-value>` это старое имя объекта сохраненного в ref, `<new-value>` это имя нового объекта который будет сохранен в ref и `<ref-name>` это полное имя ref. Когда создается новая ref, `<old-value>` принимает значение 40 `0`.
 
-If the hook exits with non-zero status, none of the refs will be
-updated. If the hook exits with zero, updating of individual refs can
-still be prevented by the <<update,'update'>> hook.
+Если хук завершает выполнение с ненулевым статусом, ни одна из refs(ссылок) будет обновлена. Если хук завершится с нулевым статусом, то обновление индивидуальных refs все еще можно предотвратить хуком <<update,'update'>>.
 
-Both standard output and standard error output are forwarded to
-'git-send-pack' on the other end, so you can simply `echo` messages
-for the user.
+Оба стандарный вывод и стандартный вывод ошибок перенаправлены на 'git-send-pack' на другой стороне, так что вы можете просто посылать `echo` сообщения для пользователя.
 
-If you wrote it in Ruby, you might get the args this way:
+Если вы написали его на Руби, вы можете получить аргументы след.образом:
 
 	ruby
 	rev_old, rev_new, ref = STDIN.read.split(" ")
 
-Or in a bash script, something like this would work:
+Или в bash скрипт, аналогичный тому что ниже тоже будет работать:
 	
 	#!/bin/sh
 	# <oldrev> <newrev> <refname>
@@ -207,117 +169,68 @@ Or in a bash script, something like this would work:
 
     GIT_DIR/hooks/update
 
-This hook is invoked by 'git-receive-pack' on the remote repository,
-which happens when a 'git-push' is done on a local repository.
-Just before updating the ref on the remote repository, the update hook
-is invoked.  Its exit status determines the success or failure of
-the ref update.
+Этот хук вызывается 'git-receive-pack' на удаленном репозитории, что происходит когда выполнение 'git-push' завершилось на локальном репозитории. Перед самым обновлением ссылок на удаленном репозитории, вызывается хук обновления. Его статус окончания выполнения определяет успешно или неудачно обновилась ссылка.
 
-The hook executes once for each ref to be updated, and takes
-three parameters:
+Этот хук выполняется один раз для обновления каждой ссылки, и он принимает три параметра:
 
- - the name of the ref being updated,
- - the old object name stored in the ref,
- - and the new objectname to be stored in the ref.
+ - имя обновляемой ссылки,
+ - имя старого объекта хранящегося в ссылке,
+ - и новое имя объекта которое сохранится в ссылке.
 
-A zero exit from the update hook allows the ref to be updated.
-Exiting with a non-zero status prevents 'git-receive-pack'
-from updating that ref.
+Нулевой выход из хука обновления позволяет обновиться ссылке. Выход с ненулевым статусом предотвратит обновление этой ссылки хуком 'git-receive-pack'
 
-This hook can be used to prevent 'forced' update on certain refs by
-making sure that the object name is a commit object that is a
-descendant of the commit object named by the old object name.
-That is, to enforce a "fast forward only" policy.
+Этот хук может быть использован чтобы предотвратить 'forced(вынужденное)' обновление определенных ссылок, с помощью проверки что имени объекта соотвествует объект коммит, который является потомоком объекта коммита названного по имени старого объекта. Это для того чтобы заставить работать правило "только fast-forwarding".
 
-It could also be used to log the old..new status.  However, it
-does not know the entire set of branches, so it would end up
-firing one e-mail per ref when used naively, though.  The
-<<post-receive,'post-receive'>> hook is more suited to that.
+Он также может быть использован что логгировать старый..новый статус. Как бы там ни было, он не знает все множество ветвей, и закончит посылая одно эл.сообщение на каждую обновленную ссылку, когда используется напрямую. Хук 
+<<post-receive,'post-receive'>> лучше подходит для этого.
 
-Another use suggested on the mailing list is to use this hook to
-implement access control which is finer grained than the one
-based on filesystem group.
+Другое использование предложеное в списке рассылки, использовать этот хук чтобы реализовать контроль доступа, который будет лучше гранулирован чем тот что используется на основе групп в файловой системе.
 
-Both standard output and standard error output are forwarded to
-'git-send-pack' on the other end, so you can simply `echo` messages
-for the user.
+Оба стандартный вывод и стандартные вывод ошибок перенаправлены с другого конца в 'git-send-pack', так что вы легко можете `посылать echo` сообщения для пользователя.
 
-The default 'update' hook, when enabled--and with
-`hooks.allowunannotated` config option turned on--prevents
-unannotated tags to be pushed.
+Хук 'update' по умолчанию, когда активирован--и с включенным конфигурационным параметром `hooks.allowunannotated`--предотвращает выполнение push неаннотированных тагов.
 
 
 ### post-receive ###
 
     GIT_DIR/hooks/post-receive
     
-This hook is invoked by 'git-receive-pack' on the remote repository,
-which happens when a 'git-push' is done on a local repository.
-It executes on the remote repository once after all the refs have
-been updated.
+Этот хук вызывается 'git-receive-pack' на удаленном репозитории, что происходит когда завершается 'git-push' на локальном репозитории. Он выполняется на удаленном репозитории один раз после того как все ссылки будут обновлены.
 
-This hook executes once for the receive operation.  It takes no
-arguments, but gets the same information as the
-<<pre-receive,'pre-receive'>>
-hook does on its standard input.
+Этот хук выполняется один раз для операции получения. Он не принимает аргументов, но получает туже информацию что и хук <<pre-receive,'pre-receive'>> на его стандартный ввод.
 
-This hook does not affect the outcome of 'git-receive-pack', as it
-is called after the real work is done.
+Этот хук не влияет на результат 'git-receive-pack', так как он вызывается после того как работа фактически уже окончена.
 
-This supersedes the <<post-update,'post-update'>> hook in that it gets
-both old and new values of all the refs in addition to their
-names.
+Он замещает хук <<post-update,'post-update'>> таким образом, он получает оба старые и новые значения всех ссылок в добавок к их именам.
 
-Both standard output and standard error output are forwarded to
-'git-send-pack' on the other end, so you can simply `echo` messages
-for the user.
+Оба стандартный вывод и стандартный вывод ошибок перенаправлены с другой стороны на 'git-send-pack', так что вы можете просто посылать `echo` сообщения пользователю.
 
-The default 'post-receive' hook is empty, but there is
-a sample script `post-receive-email` provided in the `contrib/hooks`
-directory in git distribution, which implements sending commit
-emails.
+Дефолтовый хук 'post-receive' пуст, но существует скрипт образец `post-receive-email` в директории `contrib/hooks` идущий по умолчанию в комплекте с git, который реализует отпраление коммитов по эл.почте.
 
 
 ### post-update ###
 
     GIT_DIR/hooks/post-update
     
-This hook is invoked by 'git-receive-pack' on the remote repository,
-which happens when a 'git-push' is done on a local repository.
-It executes on the remote repository once after all the refs have
-been updated.
+Этот хук вызвается 'git-receive-pack' на удаленном репозитории, и происходит когда завершается выполнение 'git-push' на локальном репозитории.
+Он выполняется на удаленном репозитории один раз после того как все ссылки будут обновлены.
 
-It takes a variable number of parameters, each of which is the
-name of ref that was actually updated.
+Он берет переменное число параметров, каждый из которых это имя ссылки которая фактически была обновлена.
 
-This hook is meant primarily for notification, and cannot affect
-the outcome of 'git-receive-pack'.
+Это хук главным образом назначается для уведомлений, и не может повлиять на результат 'git-receive-pack'.
 
-The 'post-update' hook can tell what are the heads that were pushed,
-but it does not know what their original and updated values are,
-so it is a poor place to do log old..new. The
-<<post-receive,'post-receive'>> hook does get both original and
-updated values of the refs. You might consider it instead if you need
-them.
+Хук 'post-update' может сообщить для каких HEAD было выполнена операция push, но он не знает каковы их оригинальные и обновленные значения, так что это не самое лучшее место чтобы логировать. Хук <<post-receive,'post-receive'>> получает оба оригинальные и обновленные значения ссылок. Вам лучше использовать его если они вам нужны.
 
-When enabled, the default 'post-update' hook runs
-'git-update-server-info' to keep the information used by dumb
-transports (e.g., HTTP) up-to-date.  If you are publishing
-a git repository that is accessible via HTTP, you should
-probably enable this hook.
+Когда активирован, хук 'post-update' по умолчанию запускает 'git-update-server-info' чтобы поддерживать информацию обновленной использованную транспотными протоколами (e.g., HTTP). Если вы публикуете репозиториий git который доступен по протоколу HTTP, то возможно вы должны разрешить этот хук.
 
-Both standard output and standard error output are forwarded to
-'git-send-pack' on the other end, so you can simply `echo` messages
-for the user.
+Оба стандартный вывод и стандартный вывод ошибок перенаправлены на 'git-send-pack' с другого конца, так что вы можете просто посылать `echo` сообщения для пользователя.
 
 
 ### pre-auto-gc ###
 
     GIT_DIR/hooks/pre-auto-gc
 
-This hook is invoked by 'git-gc --auto'. It takes no parameter, and
-exiting with non-zero status from this script causes the 'git-gc --auto'
-to abort.
+Это хук вызывается 'git-gc --auto'. Он не принимает параметров, и выход с ненулевым статусом из этого скрипта вызывает прекращение работы 'git-gc --auto'.
 
 
 ### References ###
