@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Git Book - Заморозка кода</title>
+	<meta http-equiv="content-language" content="en">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.png" type="image/png">
+	<link rel="stylesheet" href="assets/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="assets/blueprint/print.css" type="text/css" media="print">
+  <!--[if IE]><link rel="stylesheet" href="assets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/stylesheets/mac_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/stylesheets/style.css" type="text/css" media="screen, projection">
+</head>
+
+<body>
+<div class="container chapter showgrids">
+
+  <div class="span-21 header">
+    <div class="nav"><a href="4_Интерактивное_Добавление.html">Prev</a>  <a href="4_git_treeishes.html">Next</a></div>
+    <div class="title"><a href='index.html'>Git Community Book</a></div>
+  </div>
+  
+  <div class="span-21">
+    <br/>
+  </div>
+  
+  <div class="span-21">
+    <h2>Заморозка кода</h2>
+
+<p>Во время работы над чем сложным, вы нашли какой то баг который в принципе очевидный и простой но не относится к той работе которой вы занимаетесь в данный момент, и вы хотите исправить его перед тем как продолжить работу. Вы можете использовать <a href="http://www.kernel.org/pub/software/scm/git/docs/git-stash.html">git stash</a> чтобы заморозить текущее состояние вашей работы, и позже, после того как исправите баг, (или опционально после исправления этого бага в другой ветке и потом возвращения назад), разморозить изменения.</p>
+
+<pre><code>$ git stash save "work in progress for foo feature"
+</code></pre>
+
+<p>Эта команда заморозит ваши изменения в <code>stash</code>, и сбросит вашу рабочее дерево и индекс на совпадающее с кончиком вашей текущей ветки. Затем вы можете приступить к исправлению.</p>
+
+<pre><code>... edit and test ...
+$ git commit -a -m "blorpl: typofix"
+</code></pre>
+
+<p>После чего, вы можете вернуться над чем вы работали выполнив <code>git stash apply</code>:</p>
+
+<pre><code>$ git stash apply
+</code></pre>
+
+<h3>Очередь заморозки</h3>
+
+<p>Вы также можете испльзовать заморозку чтобы создвать очереди замороженных изменений.<br/>
+Если вы выполните 'git stash list' вы можете увидеть спискок из замороженных состояний сохраненных вами:</p>
+
+<pre><code>$&gt;git stash list
+stash@{0}: WIP on book: 51bea1d... fixed images
+stash@{1}: WIP on master: 9705ae6... changed the browse code to the official repo
+</code></pre>
+
+<p>Затем вы можете приложить их индивидуально с помощью 'git stash apply stash@{1}'. Вы можете очистить список выполнив 'git stash clear'.</p>
+
+<p>Примечание:
+stash -  переводится как тайник но наверное лучше сказать что заморозить</p>
+
+
+  </div>
+  
+  <div class="span-21">
+    <hr/>
+    <div class="center"><a href="4_Интерактивное_Добавление.html">Prev</a>  <a href="4_git_treeishes.html">Next</a></div>
+    <hr/>
+  </div>
+  
+  <div class="span-17 footer">
+  	<div class="menu">
+  		This book is maintained by Scott Chacon, and hosting is donated by GitHub.
+  		<br>
+  		Please email me at <a href="mailto:schacon@gmail.com">schacon@gmail.com</a>
+  		with patches, suggestions and comments.
+	  </div>
+  </div>
+  <div class="span-4 last center">
+    <a href="http://github.com"><img src="assets/images/github.png" alt="github logo"></a>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-82337-12");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<script src="http://static.getclicky.com/40584.js" type="text/javascript"></script>
+<noscript><p><img alt="Clicky" src="http://in.getclicky.com/40584-db6.gif" /></p></noscript>
+
+</body>
+</html>

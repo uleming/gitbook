@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Git Book - Отмена в Git - Сброс, Извлечение и Откат</title>
+	<meta http-equiv="content-language" content="en">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.png" type="image/png">
+	<link rel="stylesheet" href="assets/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="assets/blueprint/print.css" type="text/css" media="print">
+  <!--[if IE]><link rel="stylesheet" href="assets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/stylesheets/mac_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/stylesheets/style.css" type="text/css" media="screen, projection">
+</head>
+
+<body>
+<div class="container chapter showgrids">
+
+  <div class="span-21 header">
+    <div class="nav"><a href="4_Поиск_с_git_grep.html">Prev</a>  <a href="4_Сопровождение_git.html">Next</a></div>
+    <div class="title"><a href='index.html'>Git Community Book</a></div>
+  </div>
+  
+  <div class="span-21">
+    <br/>
+  </div>
+  
+  <div class="span-21">
+    <h2>Отмена в Git - Сброс, Извлечение и Откат</h2>
+
+<p>Git имеет множество способов исправить ошибку в процессе вашей работы. Выбор подходящего способа зависит от того провели вы коммит с ошибкой или нет, и если вы включили ошибку в коммит, то расшарили вы ошибочный коммит с кем еще либо.</p>
+
+<h3>Исправление незакоммиченных ошибок</h3>
+
+<p>Если вы испортили рабочее дерево, но не выполнили еще коммит, вы можете вернуть все рабочее дерево к состоянию на момент последнего коммита с помощью</p>
+
+<pre><code>$ git reset --hard HEAD
+</code></pre>
+
+<p>Это отбросит все сделанные изменения которые вы возможно добавили в индекс git, а также все другие изменения в вашей рабочем дереве. Другими словами, результат этого - вывод команд "git diff" и "git diff --cached" будет пустым.</p>
+
+<p>Если вы просто хотите восстановить только один единственный файл, предположим hello.rb, то выполните <a href="http://www.kernel.org/pub/software/scm/git/docs/git-checkout.html">git checkout</a> вместо</p>
+
+<pre><code>$ git checkout -- hello.rb
+$ git checkout HEAD hello.rb
+</code></pre>
+
+<p>Первая команда восстановит hello.rb до версии хранящейся в индексе, и команда "git diff hello.rb" не покажет отличий. Вторая команда восстановит hello.rb до версии в ревизии HEAD, таким образом обе команды "git diff hello.rb" и "git diff --cached hello.rb" не покажут отличий.</p>
+
+<h3>Исправление закоммиченных ошибок</h3>
+
+<p>Если вы сделали коммит а позже вам захотелось чтоб его и не было, то есть два фундаментально разных способа осуществить это:</p>
+
+<ol>
+<li><p>Вы создаете новый коммит в котором нет тех нежелательных частей
+ присутствующих в старом коммите.  Это правильный способ если ваша ошибка уже была опубликована.</p></li>
+<li><p>Вы можете вернуться назад и изменить ваш старый коммит. Никогда не делайте
+ этого если вы уже опубликовали вашу историю; git не предполагает изменения в <strong>истории</strong> проекта, и не может правильно выполнять повтор слияния из ветки, история которой была изменена.</p></li>
+</ol>
+
+
+<h4>Исправление ошибки новым коммитом</h4>
+
+<p>Создание нового коммита который восстанавливает предыдущее состояние очень просто; нужно только передать команду <a href="http://www.kernel.org/pub/software/scm/git/docs/git-revert.html">git revert</a> ссылку на ошибочный коммит; например чтобы восстановить наиболее свежий коммит:</p>
+
+<pre><code>$ git revert HEAD
+</code></pre>
+
+<p>Это создаст новый коммит который отменяет изменения в HEAD. Вам предоставится шанс отредактировать сообщение-описание нового коммита.</p>
+
+<p>Вы также можете восстановить предыдущие изменения, например, от слеж к прошлому:</p>
+
+<pre><code>$ git revert HEAD^
+</code></pre>
+
+<p>В этом случае git попробует отменить прошлые изменения, в то время как любые изменения сделанные потом остануться нетронутыми. Если более свежие изменения перекрывают с изменениями которые должны быть восстановлены, то git пропросит вас исправить конфликты вручную, таким же образом как в случае слияний.</p>
+
+<h4>Исправление ошибок изменяя коммит</h4>
+
+<p>Если вы только что выполнили коммит но осознали что вам нужно в нем что то исправить, последнии версии <a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html">git commit</a> поддерживают флаг <strong>--amend</strong> который указывает git заменит коммит HEAD новым коммитом, основываясь на текущем содержании индекса. Это дает вам удобный случай добавить файлы которые вы забыли добавить или исправить опечатки в сообщении-описании коммита, до того как вы выполните push и сделаете свои изменения доступными всему миру.</p>
+
+<p>Если вы нашли  ошибку в давнем коммите, но который еще не опубликовали, используйте <a href="http://www.kernel.org/pub/software/scm/git/docs/git-rebase.html">git rebase</a> в интерактивном режиме, с "git rebase -i" отмечающий изменения которые требуют коррекции с <strong>edit</strong>. Это позволит вам изменить коммит во время процесса rebase.</p>
+
+
+  </div>
+  
+  <div class="span-21">
+    <hr/>
+    <div class="center"><a href="4_Поиск_с_git_grep.html">Prev</a>  <a href="4_Сопровождение_git.html">Next</a></div>
+    <hr/>
+  </div>
+  
+  <div class="span-17 footer">
+  	<div class="menu">
+  		This book is maintained by Scott Chacon, and hosting is donated by GitHub.
+  		<br>
+  		Please email me at <a href="mailto:schacon@gmail.com">schacon@gmail.com</a>
+  		with patches, suggestions and comments.
+	  </div>
+  </div>
+  <div class="span-4 last center">
+    <a href="http://github.com"><img src="assets/images/github.png" alt="github logo"></a>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-82337-12");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<script src="http://static.getclicky.com/40584.js" type="text/javascript"></script>
+<noscript><p><img alt="Clicky" src="http://in.getclicky.com/40584-db6.gif" /></p></noscript>
+
+</body>
+</html>

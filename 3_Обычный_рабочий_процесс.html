@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Git Book - Обычный рабочий процесс</title>
+	<meta http-equiv="content-language" content="en">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.png" type="image/png">
+	<link rel="stylesheet" href="assets/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="assets/blueprint/print.css" type="text/css" media="print">
+  <!--[if IE]><link rel="stylesheet" href="assets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/stylesheets/mac_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/stylesheets/style.css" type="text/css" media="screen, projection">
+</head>
+
+<body>
+<div class="container chapter showgrids">
+
+  <div class="span-21 header">
+    <div class="nav"><a href="3_Как_получить_git_репозиторий.html">Prev</a>  <a href="3_Управление_ветвлением_и_слиянием.html">Next</a></div>
+    <div class="title"><a href='index.html'>Git Community Book</a></div>
+  </div>
+  
+  <div class="span-21">
+    <br/>
+  </div>
+  
+  <div class="span-21">
+    <h2>Обычный рабочий процесс</h2>
+
+<p>Модифицируйте некоторые файлы, а затем добавьте их в индекс:</p>
+
+<pre><code>$ git add file1 file2 file3
+</code></pre>
+
+<p>Теперь вы готовы выполнить коммит. Вы можете узнать что именно будет добавлено в коммит используя <a href="http://www.kernel.org/pub/software/scm/git/docs/git-diff.html">git diff</a> с параметром --cached:</p>
+
+<pre><code>$ git diff --cached
+</code></pre>
+
+<p>(Без --cached, <a href="http://www.kernel.org/pub/software/scm/git/docs/git-diff.html">git diff</a> покажет вам все изменения, которые вы сделали но не добавили еще в индекс.) Вы также можете получить краткое описание сложившейся ситуации с помощью <a href="http://www.kernel.org/pub/software/scm/git/docs/git-status.html">git status</a>:</p>
+
+<pre><code>$ git status
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD &lt;file&gt;..." to unstage)
+#
+#   modified:   file1
+#   modified:   file2
+#   modified:   file3
+#
+</code></pre>
+
+<p>Если вам необходимо сделать еще какие-либо изменения, делайте это сейчас, и затем добавьте измененные файлы в индекс. В заключении выполните коммит чтобы закрепить изменения след.образом:</p>
+
+<pre><code>$ git commit
+</code></pre>
+
+<p>Вы увидите приглашение ввести сообщение описывающее изменения, а затем и будет записана новая версия проекта.</p>
+
+<p>Как альтернатива, вместо предварительного выполнения команды <code>git add</code>, вы можете использовать следующую команду</p>
+
+<pre><code>$ git commit -a
+</code></pre>
+
+<p>эта команда будет автоматически определять измененные файлы (но не новые файлы), добавлять их в индекс, и затем коммитить, и все это за один шаг.</p>
+
+<p>Замечание (как описывать коммиты): Несмотря на то что это необязательно, хорошая привычка начинать сообщение-описание коммита с одной короткой строки (менее чем 50 символов) подытоживающей проделанные изменения, затем оставить пустую строку и затем дать более развернутое описание. Инструменты, которые отсылают эл.сообщение о сделанном коммите, обычно используют первую строку как
+Тему: в эл.письма и подробное описание в теле эл.письма.</p>
+
+<h4>Git отслеживает содержимое не файлов</h4>
+
+<p>Во многих системах контроля версий есть команда "add", которая говорит системе начать отслеживать изменения нового файла. В Git команда "add" более простая но вместе с тем более мощная: <code>git add</code> используется как для новых так и для модифицированных файлов, и в обоих случаях она делает снапшот указываемых файлов и помещает их в индекс, после чего эти файлы будут включены в следующий коммит.</p>
+
+<p><a href="" title="GitCast #2: Normal Workflow">gitcast:c2_normal_workflow</a></p>
+
+
+  </div>
+  
+  <div class="span-21">
+    <hr/>
+    <div class="center"><a href="3_Как_получить_git_репозиторий.html">Prev</a>  <a href="3_Управление_ветвлением_и_слиянием.html">Next</a></div>
+    <hr/>
+  </div>
+  
+  <div class="span-17 footer">
+  	<div class="menu">
+  		This book is maintained by Scott Chacon, and hosting is donated by GitHub.
+  		<br>
+  		Please email me at <a href="mailto:schacon@gmail.com">schacon@gmail.com</a>
+  		with patches, suggestions and comments.
+	  </div>
+  </div>
+  <div class="span-4 last center">
+    <a href="http://github.com"><img src="assets/images/github.png" alt="github logo"></a>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-82337-12");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<script src="http://static.getclicky.com/40584.js" type="text/javascript"></script>
+<noscript><p><img alt="Clicky" src="http://in.getclicky.com/40584-db6.gif" /></p></noscript>
+
+</body>
+</html>

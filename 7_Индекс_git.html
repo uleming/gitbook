@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Git Book - Индекс Git</title>
+	<meta http-equiv="content-language" content="en">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.png" type="image/png">
+	<link rel="stylesheet" href="assets/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="assets/blueprint/print.css" type="text/css" media="print">
+  <!--[if IE]><link rel="stylesheet" href="assets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/stylesheets/mac_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/stylesheets/style.css" type="text/css" media="screen, projection">
+</head>
+
+<body>
+<div class="container chapter showgrids">
+
+  <div class="span-21 header">
+    <div class="nav"><a href="7_git_Справочник.html">Prev</a>  <a href="7_Пакфайлы.html">Next</a></div>
+    <div class="title"><a href='index.html'>Git Community Book</a></div>
+  </div>
+  
+  <div class="span-21">
+    <br/>
+  </div>
+  
+  <div class="span-21">
+    <h2>Индекс Git</h2>
+
+<p>Индекс это бинарный файл (обычно находится в .git/index) содержащий отсортированный список имен путей, каждый с разрешениями и SHA1 значениями объекта блоба; <a href="http://www.kernel.org/pub/software/scm/git/docs/git-ls-files.html">git ls-files</a> покажет вам содержимое индекса:</p>
+
+<pre><code>$ git ls-files --stage
+100644 63c918c667fa005ff12ad89437f2fdc80926e21c 0   .gitignore
+100644 5529b198e8d14decbe4ad99db3f7fb632de0439d 0   .mailmap
+100644 6ff87c4664981e4397625791c8ea3bbb5f2279a3 0   COPYING
+100644 a37b2152bd26be2c2289e1f57a292534a51a93c7 0   Documentation/.gitignore
+100644 fbefe9a45b00a54b58d94d06eca48b03d40a50e0 0   Documentation/Makefile
+...
+100644 2511aef8d89ab52be5ec6a5e46236b4b6bcd07ea 0   xdiff/xtypes.h
+100644 2ade97b2574a9f77e7ae4002a4e07a6a38e46d07 0   xdiff/xutils.c
+100644 d5de8292e05e7c36c4b68857c1cf9855e3d2f70a 0   xdiff/xutils.h
+</code></pre>
+
+<p>Замечание, в старой документации вы возможно встретите определение индекса
+"current directory cache(кэш текущей директории)" или просто "cache(кэш)".  Он имеет три важдых свойства:</p>
+
+<ol>
+<li><p>Индекс содержит всю информацию необходимую чтобы сгенерировать один
+ (уникальный) объект дерево.</p>
+
+<p> Например, выполнение <a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html">git commit</a> сгенерирует этот объект дерево из индекса, сохранит его в базе данных объектов, и использует его как объект дерево связанный с новым коммитом.</p></li>
+<li><p>Индекс разрешает быстрое сравнение между объектом дерево которое он
+ определяет и рабочим деревом.</p>
+
+<p> Он делает это сохраняя некоторую дополнительную информацию каждой записи (такой как время последней модификации). Эти данные не отображаются выше, и не сохраняются в созданном объекте дерево, но они могут быть использованы чтобы быстро определить какие файлы в рабочей директории отличаются от тех что в индексе, и поэтому предохраняет git от постоянного чтения всех данных из таких файлов в поисках изменений.</p></li>
+<li><p>Он может эффективно предствить информацию о конфликтах при слиянии между
+ различными объектами дерево, позволяя каждому пути быть связанным с достаточной информацией о вовлеченных деревьях, и вы можете создавать слияние между ними в три способа.</p>
+
+<p> В процессе слияния, индекс может хранить множество версий одного файла (называемых "stages(заморозка)"). Третья колонка в выводе <a href="http://www.kernel.org/pub/software/scm/git/docs/git-ls-files.html">git ls-files</a> выше это номер заморозки, и примет значения отличные от 0 для файлов с конфликтами при слиянии.</p></li>
+</ol>
+
+
+<p>Индекс это своего рода временная область заморозки, которая заполняется деревом над котором вы в процессе работы.</p>
+
+
+  </div>
+  
+  <div class="span-21">
+    <hr/>
+    <div class="center"><a href="7_git_Справочник.html">Prev</a>  <a href="7_Пакфайлы.html">Next</a></div>
+    <hr/>
+  </div>
+  
+  <div class="span-17 footer">
+  	<div class="menu">
+  		This book is maintained by Scott Chacon, and hosting is donated by GitHub.
+  		<br>
+  		Please email me at <a href="mailto:schacon@gmail.com">schacon@gmail.com</a>
+  		with patches, suggestions and comments.
+	  </div>
+  </div>
+  <div class="span-4 last center">
+    <a href="http://github.com"><img src="assets/images/github.png" alt="github logo"></a>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-82337-12");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<script src="http://static.getclicky.com/40584.js" type="text/javascript"></script>
+<noscript><p><img alt="Clicky" src="http://in.getclicky.com/40584-db6.gif" /></p></noscript>
+
+</body>
+</html>

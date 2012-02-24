@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Git Book - Объектная модель Git</title>
+	<meta http-equiv="content-language" content="en">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.png" type="image/png">
+	<link rel="stylesheet" href="assets/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="assets/blueprint/print.css" type="text/css" media="print">
+  <!--[if IE]><link rel="stylesheet" href="assets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/stylesheets/mac_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/stylesheets/style.css" type="text/css" media="screen, projection">
+</head>
+
+<body>
+<div class="container chapter showgrids">
+
+  <div class="span-21 header">
+    <div class="nav"><a href="1_Добро_пожаловать_в_git.html">Prev</a>  <a href="1_Директория_git_и_Рабочая_директория.html">Next</a></div>
+    <div class="title"><a href='index.html'>Git Community Book</a></div>
+  </div>
+  
+  <div class="span-21">
+    <br/>
+  </div>
+  
+  <div class="span-21">
+    <h2>Объектная модель Git</h2>
+
+<h3>SHA</h3>
+
+<p>Вся информация требуемая чтобы представить историю проекта хранится в особым образом организованных файлах. Все файлы хранят ссылаются друг на друга с помощью 40-значного "имени объекта" и это имя выглядит так:</p>
+
+<pre><code>6ff87c4664981e4397625791c8ea3bbb5f2279a3
+</code></pre>
+
+<p>Вы увидите эти 40-значные строки повсюду в Git.
+В каждом случае имя вычисляется как SHA1 значение содержимого объекта.
+SHA1 хэш это криптографическая хэш-функция. Для нас это значит то, что практически нереально найти два разных объекта с одинаковым именем. Это дает огромную выгоду; такую как:</p>
+
+<ul>
+<li>Git может быстро определить идентичны ли два объекта или нет, просто сравнивая их имена.</li>
+<li>Так как имена объектов вычисляются одинаково во всех репозиториях, то объекты с одинаковым содержимым в двух репозиториях всегда будут хранится под одинаковыми именами.</li>
+<li>Git может находить ошибки когда читает объект, для этого нужно просто сравнить хэш значение содержимого объекта с его именем.</li>
+</ul>
+
+
+<h3>Объекты</h3>
+
+<p>Каждый объект состоит из трех частей - <strong>тип</strong>, <strong>размер</strong> , <strong>содержимое</strong>.
+Размер это просто объем содержимого, а содержимое зависит от типа объекта. Существуют 4 разных типа объекта: "блоб", "дерево", "коммит", и "таг".</p>
+
+<ul>
+<li><strong>"блоб"</strong> используется чтобы хранить содержимое файла - обычно это просто файл.</li>
+<li><strong>"дерево"</strong> это что то вроде директории - оно ссылается на группу других
+   деревьев и/или блобов (т.е. файлов и директорий)</li>
+<li><strong>"коммит"</strong> указывает на отдельное дерево, от по сути отмечает дерево
+   фиксируя в истории каким образом оно выглядет в момент выполнения коммита.
+   Он содержит метаинфомацию фиксируя момент времени и автора изменений внесенных с последднего коммита, указатель на предыдущий коммит, и т.д.</li>
+<li><strong>"таг"</strong> это способ маркировать некоторым образом определенный комит.
+   Обычно это используется чтобы маркировать(по сути дать какое либо легко запоминающеся имя) определенные комиты как специфические, чтобы впоследствии было легче их найти.</li>
+</ul>
+
+
+<p>Почти все в Git построено вокруг манипуляций этой простой структурой состоящей из четырех различных типов объектов. Это что-то вроде своеобразной файловой-системы надстроенной над файловой-системой компьютера.</p>
+
+<h3>Различия с SVN</h3>
+
+<p>Важное замечание: в отличии от других распространенных систем контроля версий с которым вы возможно знакомы. Subversion, CVS, Perforce, Mercurial другие подобные им используют Delta Storage Systems (приемы на базе дельта алгоритмов http://ru.wikipedia.org/wiki/Дельта-кодирование) - они хранят разницу между двумя следующими друг за другом комитами.  Git не делает этого - он хранит снапшот своего рода точный снимок всех файлов и директорий, состояния всего дерева в момент коммита. Очень важно понимать эту концепцию когда испльзуете Git.</p>
+
+<h3>Объект типа блоб</h3>
+
+<p>Блоб обычно хранит содержимое файла.</p>
+
+<p><div class="center"><img src="assets/images/figure/object-blob.png"></div></p>
+
+<p>Вы можете использовать <a href="http://www.kernel.org/pub/software/scm/git/docs/git-show.html">git show</a> чтобы исследовать содержимое блоба.
+Предположим у нас есть SHA-значение блоба, таким образом чтобы просмотреть его содержимое выполните выполнить:</p>
+
+<pre><code>$ git show 6ff87c4664
+
+ Note that the only valid version of the GPL as far as this project
+ is concerned is _this_ particular version of the license (ie v2, not
+ v2.2 or v3.x or whatever), unless explicitly otherwise stated.
+...
+</code></pre>
+
+<p>Объект "блоб" это всего лишь некоторая порция бинарных данных. Он ни на что не ссылается у него нет каких либо атрибутов, нет даже имени файла.</p>
+
+<p>Поскольку блоб полностью определяется его собственным содержимым, то если два файла в директории или даже в разных версиях репозитория имеют одинаковое содержимое, они будут разделять один и тот же блоб объект. Объект полностью независит от его расположения в дереве каталогов, и переименование файла не изменит объект с которым этом файл связан.</p>
+
+<h3>Объект дерево</h3>
+
+<p>Дерево это простой объект который заключает в себе группу указателей на блобы и другие деревья - обычно представляет содержимое директорий или поддиректорий.</p>
+
+<p><div class="center"><img src="assets/images/figure/object-tree.png"></div></p>
+
+<p>Команда <a href="http://www.kernel.org/pub/software/scm/git/docs/git-show.html">git show</a> более общая, и также может быть использована чтобы исследовать дерево объектов, но <a href="http://www.kernel.org/pub/software/scm/git/docs/git-ls-tree.html">git ls-tree</a> даст вам больше подробностей.  Предположим у нас есть SHA значение дерева, тогда мы можем исследовать его следующим образом:</p>
+
+<pre><code>$ git ls-tree fb3a8bdd0ce
+100644 blob 63c918c667fa005ff12ad89437f2fdc80926e21c    .gitignore
+100644 blob 5529b198e8d14decbe4ad99db3f7fb632de0439d    .mailmap
+100644 blob 6ff87c4664981e4397625791c8ea3bbb5f2279a3    COPYING
+040000 tree 2fb783e477100ce076f6bf57e4a6f026013dc745    Documentation
+100755 blob 3c0032cec592a765692234f1cba47dfdcc3a9200    GIT-VERSION-GEN
+100644 blob 289b046a443c0647624607d471289b2c7dcd470b    INSTALL
+100644 blob 4eb463797adc693dc168b926b6932ff53f17d0b1    Makefile
+100644 blob 548142c327a6790ff8821d67c2ee1eff7a656b52    README
+...
+</code></pre>
+
+<p>Как вы можете видеть, объект дерево содержит список записей. Каждая запись состоит из вида, типа объекта, SHA1 значения, и имени соответственно. Записи отсортированы по имени. Так выглядит содержимое одной директории дерева.</p>
+
+<p>Ссылка на объект в дереве может быть как блобом (файлом по сути) так и деревом (поддиректорией). Поскольку имена всех объектов, деревьев и блобов, совпадает с SHA хэш-значением их содержимого, то SHA значения двух деревьев будут идентичны только если их содержимое (включая, рекурсивно, содержимое всех поддиректорий) идентично.</p>
+
+<p>Это свойство позволяет git быстро найти отличия между двумя родственными объектами типа дерево, так как git может игнорировать объекты с одинаковыми именами.</p>
+
+<p>Замечание: деревья могут также содержать записи коммитов. Более продробно от этом в секции <strong>Подмодули</strong>.)</p>
+
+<p>Отметьте для себя, что все файлы имеют права 644 или 755: фактически git обращает внимание только на бит исполнения.</p>
+
+<h3>Объекты коммит</h3>
+
+<p>Объект "коммит" связывает физическое состояние дерева с описпнием того каким образом мы пришли к этому и почему.</p>
+
+<p><div class="center"><img src="assets/images/figure/object-commit.png"></div></p>
+
+<p>Вы можете использовать параметр --pretty=raw с <a href="http://www.kernel.org/pub/software/scm/git/docs/git-show.html">git show</a> или <a href="http://www.kernel.org/pub/software/scm/git/docs/git-log.html">git log</a> чтобы исследовать коммит:</p>
+
+<pre><code>$ git show -s --pretty=raw 2be7fcb476
+commit 2be7fcb4764f2dbcee52635b91fedb1b3dcf7ab4
+tree fb3a8bdd0ceddd019615af4d57a53f43d8cee2bf
+parent 257a84d9d02e90447b149af58b271c19405edb6a
+author Dave Watson &lt;dwatson@mimvista.com&gt; 1187576872 -0400
+committer Junio C Hamano &lt;gitster@pobox.com&gt; 1187591163 -0700
+
+    Fix misspelling of 'suppress' in docs
+
+    Signed-off-by: Junio C Hamano &lt;gitster@pobox.com&gt;
+</code></pre>
+
+<p>Как вы можете это видеть, коммит определяется:</p>
+
+<ul>
+<li><strong>дерево</strong>: SHA1 имя объекта дерево (как определено ниже), представляющее
+содержимое директории в определенный момент времени.</li>
+<li><strong>родитель(и)</strong>: SHA1 имя некоторого числа коммитов которые представляют
+собой предыдущий шаг(и) в истории проекта. Пример выше имеет одного родителя; хотя коммиты слияния могут иметь более чем одного родителя. Коммит без родителей называется "root (корневой)" коммит, и представляет собой начальное состояние проекта. Каждый проект должен иметь по крайней мере один корневой коммит. Проект может также иметь множество корней, однако это не общий случай (и не обязательно хорошая идея).</li>
+<li><strong>автор</strong>: Имя разработчика ответственного за эти изменения, вместе с датой.</li>
+<li><strong>коммитер</strong>: имя разработчика который создал этот коммит, вместе с датой
+этого события. Оно(имя) может отличаться от имени автора; например в случае, если автор написал патч и отправил его по эл.почте другому разработчику который наложил патч и выполнил коммит.</li>
+<li><strong>комментарий</strong> описывающий этот коммит.</li>
+</ul>
+
+
+<p>Заметьте что коммит сам по себе не содержит никакой информации о том что изменилось; все изменения вычисляются при сравнении содержимого дерева на которое ссылается создаваемый коммит и дерева на которое ссылается его родитель. Git не пытается явно регистрировать переименования файлов хотя может идентифицировать случаи где существование одниковых файловых данных в измененном пути предложит переименовать. (Просмотрите, например параметр -M к команде <a href="http://www.kernel.org/pub/software/scm/git/docs/git-diff.html">git diff</a>).</p>
+
+<p>Коммит обычно создается <a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html">git commit</a>. Эта команда создает коммит -  родитель которого текущая ветка HEAD, и чье дерево взято из содержимого сохраненного в данный момент в индексе.</p>
+
+<h3>Объектная модель</h3>
+
+<p>Теперь когда мы рассмотрели 3 главных объекта (блоб, дерево и коммит), давайте теперь посмотрим как они объединяются.</p>
+
+<p>Если у нас есть простой проект со след. структурой директории:</p>
+
+<pre><code>$&gt;tree
+.
+|-- README
+`-- lib
+    |-- inc
+    |   `-- tricks.rb
+    `-- mylib.rb
+
+2 directories, 3 files
+</code></pre>
+
+<p>И мы выполнили коммит всего этого в репозиторий Git, это будет выглядеть след. образом:</p>
+
+<p><div class="center"><img src="assets/images/figure/objects-example.png"></div></p>
+
+<p>Вы можете видеть что мы создали объект <strong>дерево</strong> для каждой директории (включая корневую) и объект <strong>блоб</strong> для каждого файла. Затем, мы имеем объект <strong>коммит</strong> указывающий на кореневую директорию, и мы можем отследить как наш проект выглядел в момент коммита.</p>
+
+<h3>Объект таг</h3>
+
+<p><div class="center"><img src="assets/images/figure/object-tag.png"></div></p>
+
+<p>Объект таг содержит имя объекта (называетмого просто 'объект'), тип объекта, имя тага, или разработчика ("таггер") который создал таг, и сообщение, которое может содержить подпись. Это можно увидеть выполнив <a href="http://www.kernel.org/pub/software/scm/git/docs/git-cat-file.html">git cat-file</a>:</p>
+
+<pre><code>$ git cat-file tag v1.5.0
+object 437b1b20df4b356c9342dac8d38849f24ef44f27
+type commit
+tag v1.5.0
+tagger Junio C Haеmano &lt;junkio@cox.net&gt; 1171411200 +0000
+
+GIT 1.5.0
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBF0lGqwMbZpPMRm5oRAuRiAJ9ohBLd7s2kqjkKlq1qqC57SbnmzQCdG4ui
+nLE/L9aUXdWeTFPron96DLA=
+=2E+0
+-----END PGP SIGNATURE-----
+</code></pre>
+
+<p>Просмотрите документацию команды <a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">git tag</a> чтобы изучить как создавать и проверять объекты таг. (Заметьте что <a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">git tag</a> может также использоваться чтобы создавать "легковесные таги", которые не являеются объектами таг вообще, это просто ссылки чьи имена начинаются с "refs/tags/").</p>
+
+
+  </div>
+  
+  <div class="span-21">
+    <hr/>
+    <div class="center"><a href="1_Добро_пожаловать_в_git.html">Prev</a>  <a href="1_Директория_git_и_Рабочая_директория.html">Next</a></div>
+    <hr/>
+  </div>
+  
+  <div class="span-17 footer">
+  	<div class="menu">
+  		This book is maintained by Scott Chacon, and hosting is donated by GitHub.
+  		<br>
+  		Please email me at <a href="mailto:schacon@gmail.com">schacon@gmail.com</a>
+  		with patches, suggestions and comments.
+	  </div>
+  </div>
+  <div class="span-4 last center">
+    <a href="http://github.com"><img src="assets/images/github.png" alt="github logo"></a>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-82337-12");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<script src="http://static.getclicky.com/40584.js" type="text/javascript"></script>
+<noscript><p><img alt="Clicky" src="http://in.getclicky.com/40584-db6.gif" /></p></noscript>
+
+</body>
+</html>

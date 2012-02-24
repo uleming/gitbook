@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Git Book - Интерактивное ребазирования</title>
+	<meta http-equiv="content-language" content="en">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.png" type="image/png">
+	<link rel="stylesheet" href="assets/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="assets/blueprint/print.css" type="text/css" media="print">
+  <!--[if IE]><link rel="stylesheet" href="assets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/stylesheets/mac_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/stylesheets/style.css" type="text/css" media="screen, projection">
+</head>
+
+<body>
+<div class="container chapter showgrids">
+
+  <div class="span-21 header">
+    <div class="nav"><a href="4_Ребазирование.html">Prev</a>  <a href="4_Интерактивное_Добавление.html">Next</a></div>
+    <div class="title"><a href='index.html'>Git Community Book</a></div>
+  </div>
+  
+  <div class="span-21">
+    <br/>
+  </div>
+  
+  <div class="span-21">
+    <h2>Интерактивное ребазирования</h2>
+
+<p>Вы также можете выполнять ребазирование интерактивно. Это часто используется чтобы переписать ваши коммит-объекты перед тем как выполнить их push. Это простой способ разделить, слить или переупорядочить коммиты перед тем как расшарить их с другими. Вы также можете использовать его чтобы чистить коммиты которые вы вытянули у кого либо и затем применить их на локальном репозитории..</p>
+
+<p>Если у вас есть некоторые коммиты которые вы хотели бы модифицировать во время выполнения ребазирования, вы можете вызвать интерактивный диалог передав параметр '-i' или '--interactive' в команду 'git rebase'.</p>
+
+<pre><code>$ git rebase -i origin/master
+</code></pre>
+
+<p>Это вызовет интерактивный режим выполнения операции ребазирования на все коммиты которые вы сделали с вашего последнего момента выполнения push (или слияния из репозитория origin).</p>
+
+<p>Чтобы увидеть эти коммиты заранее, вы можете выполнить команду git log след. образом:</p>
+
+<pre><code>$ git log github/master..
+</code></pre>
+
+<p>Как только вы выполнили команду 'rebase -i', тут же откроется ваш редактор по умолчанию с текстом похожим на что то в виде:</p>
+
+<pre><code>pick fc62e55 added file_size
+pick 9824bf4 fixed little thing
+pick 21d80a5 added number to log
+pick 76b9da6 added the apply command
+pick c264051 Revert "added file_size" - not implemented correctly
+
+# Rebase f408319..b04dc3d onto f408319
+#
+# Commands:
+#  p, pick = use commit
+#  e, edit = use commit, but stop for amending
+#  s, squash = use commit, but meld into previous commit
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+# However, if you remove everything, the rebase will be aborted.
+#
+</code></pre>
+
+<p>Это означает что было сделано пять коммитов с последнего выполнения вами push и это даст вам одну линию на каждый коммит следующего формата:</p>
+
+<pre><code>(action) (partial-sha) (short commit message)
+</code></pre>
+
+<p>Теперь, вы можете изменить действие (по умолчанию 'pick'-выбрать) на 'edit'-редактировать или 'squash'- сдавить или просто оставте это как 'pick'. Вы можете также переупорядочить коммиты просто передвигая линии так как вам этого хочется. Затем, когда вы выйдете из редактора, git попытается уложить коммиты тем образом каким вы это определили и выполнить действия определенные вами.</p>
+
+<p>Если определен 'pick', то он просто попробует применить патч и сохранить коммит с тем же сообщением-описанием как и было до этого.</p>
+
+<p>Если определено 'squash', то он будет комбинировать это коммит с предыдущим чтобы создать новый коммит. Вы опять попадете в редактор чтобы объединить оба сообщение-описания обоих коммитов сложив их вместе. Таким образом если вы выйдете из редактора с этим:</p>
+
+<pre><code>pick   fc62e55 added file_size
+squash 9824bf4 fixed little thing
+squash 21d80a5 added number to log
+squash 76b9da6 added the apply command
+squash c264051 Revert "added file_size" - not implemented correctly
+</code></pre>
+
+<p>То вам нужно создать одно сообщение-описание коммита из этого:</p>
+
+<pre><code># This is a combination of 5 commits.
+# The first commit's message is:
+added file_size
+
+# This is the 2nd commit message:
+
+fixed little thing
+
+# This is the 3rd commit message:
+
+added number to log
+
+# This is the 4th commit message:
+
+added the apply command
+
+# This is the 5th commit message:
+
+Revert "added file_size" - not implemented correctly
+
+This reverts commit fc62e5543b195f18391886b9f663d5a7eca38e84.
+</code></pre>
+
+<p>Как только вы отредактировали это в одно сообщение-описание и вышли из редактора, коммит будет сохранен с вашим новым сообщением-описанием.</p>
+
+<p>Если определен 'edit', то процесс будет идти также, но приостановится перед тем как двигаться к следующему вас выбросит в коммандую строку и вы сможете изменить коммит, или изменить содержимое коммита некоторым образом.</p>
+
+<p>Если вы хотите разделить коммит, например, вы определите 'edit' для этого коммита:</p>
+
+<pre><code>pick   fc62e55 added file_size
+pick   9824bf4 fixed little thing
+edit   21d80a5 added number to log
+pick   76b9da6 added the apply command
+pick   c264051 Revert "added file_size" - not implemented correctly
+</code></pre>
+
+<p>И затем когда вы попадете в командную строку, вы вернетесь к этому коммиту и создадите два (или более) новых. Давайте положим 21d80a5 изменил два файла , file1 и file2, и вы хотите разделить их в разные коммиты. Вы можете сделать это после того как выполнение перебазирования выкинуло вас в командную строку:</p>
+
+<pre><code>$ git reset HEAD^
+$ git add file1
+$ git commit 'first part of split commit'
+$ git add file2
+$ git commit 'second part of split commit'
+$ git rebase --continue
+</code></pre>
+
+<p>И теперь вместо 5 коммитов, у вас их 6.</p>
+
+<p>Последняя вещь которую интерактивное выполнение ребазирования может делать для вас - это сбрасывать коммиты.  Если вместо того чтобы выбрать 'pick', 'squash' или 'edit' для линии коммита, вы просто удалите линию, это удалить коммит из истории.</p>
+
+
+  </div>
+  
+  <div class="span-21">
+    <hr/>
+    <div class="center"><a href="4_Ребазирование.html">Prev</a>  <a href="4_Интерактивное_Добавление.html">Next</a></div>
+    <hr/>
+  </div>
+  
+  <div class="span-17 footer">
+  	<div class="menu">
+  		This book is maintained by Scott Chacon, and hosting is donated by GitHub.
+  		<br>
+  		Please email me at <a href="mailto:schacon@gmail.com">schacon@gmail.com</a>
+  		with patches, suggestions and comments.
+	  </div>
+  </div>
+  <div class="span-4 last center">
+    <a href="http://github.com"><img src="assets/images/github.png" alt="github logo"></a>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-82337-12");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<script src="http://static.getclicky.com/40584.js" type="text/javascript"></script>
+<noscript><p><img alt="Clicky" src="http://in.getclicky.com/40584-db6.gif" /></p></noscript>
+
+</body>
+</html>

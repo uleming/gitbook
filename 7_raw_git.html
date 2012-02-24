@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Git Book - Raw Git</title>
+	<meta http-equiv="content-language" content="en">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.png" type="image/png">
+	<link rel="stylesheet" href="assets/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="assets/blueprint/print.css" type="text/css" media="print">
+  <!--[if IE]><link rel="stylesheet" href="assets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/stylesheets/mac_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/stylesheets/style.css" type="text/css" media="screen, projection">
+</head>
+
+<body>
+<div class="container chapter showgrids">
+
+  <div class="span-21 header">
+    <div class="nav"><a href="7_Пакфайлы.html">Prev</a>  <a href="7_Протоколы_передачи.html">Next</a></div>
+    <div class="title"><a href='index.html'>Git Community Book</a></div>
+  </div>
+  
+  <div class="span-21">
+    <br/>
+  </div>
+  
+  <div class="span-21">
+    <h2>Raw Git</h2>
+
+<p>Здесь мы взглянем на то как манипулировать git на более низком уровне, в случае если вы пожелаете написать инструмент генерирующий новые блобы, деревья, или коммиты искуственным способом. Если вы захотите написать скрипт который использует более низкоуровневые функции git, чтобы проделать что то новое, здесь некоторые инструменты нужные вам.</p>
+
+<h3>Создание блобов</h3>
+
+<p>Создание блобов в вашем Git репозитории и получение SHA значения несложно. Команда <a href="http://www.kernel.org/pub/software/scm/git/docs/git-hash-object.html">git hash-object</a> это все что вам нужно. Чтобы создать объект блоб из существующего файла, просто выполните ее с параметром '-w' (который говорит ей записать блоб, а не просто вычислить SHA).</p>
+
+<pre><code>$ git hash-object -w myfile.txt
+6ff87c4664981e4397625791c8ea3bbb5f2279a3
+
+$ git hash-object -w myfile2.txt
+3bb0e8592a41ae3185ee32266c860714980dbed7
+</code></pre>
+
+<p>В выводе команды вы увидите SHA значение блоба который был создан..</p>
+
+<h3>Создание деревьев</h3>
+
+<p>Теперь давайте положим вы хотите создать дерево из ваших новых объектов. Команда <a href="http://www.kernel.org/pub/software/scm/git/docs/git-mktree.html">git mktree</a> делает это просто генерируя новый объект дерево из <a href="http://www.kernel.org/pub/software/scm/git/docs/git-ls-tree.html">git ls-tree</a> форматированного вывода. Например, если вы записали следующее в файл под именем '/tmp/tree.txt' :</p>
+
+<pre><code>100644 blob 6ff87c4664981e4397625791c8ea3bbb5f2279a3    file1
+100644 blob 3bb0e8592a41ae3185ee32266c860714980dbed7    file2
+</code></pre>
+
+<p>и затем пропустили это через команду <a href="http://www.kernel.org/pub/software/scm/git/docs/git-mktree.html">git mktree</a>, Git запишет новое дерево в базу данных объектов и выдаст вам новое sha значение этого дерева.</p>
+
+<pre><code>$ cat /tmp/tree.txt | git mk-tree
+f66a66ab6a7bfe86d52a66516ace212efa00fe1f
+</code></pre>
+
+<p>Затем, мы можем взять это и сделать это поддиректорией еще одного другого дерева, и так далее. Если мы хотим создать новое дерево с этим как поддеревом, мы просто созданим новый файл (/tmp/newtree.txt) с нашим новым SHA как дерево в нем:</p>
+
+<pre><code>100644 blob 6ff87c4664981e4397625791c8ea3bbb5f2279a3    file1-copy
+040000 tree f66a66ab6a7bfe86d52a66516ace212efa00fe1f    our_files
+</code></pre>
+
+<p>и затем выполним <a href="http://www.kernel.org/pub/software/scm/git/docs/git-mk-tree.html">git mk-tree</a> снова:</p>
+
+<pre><code>$ cat /tmp/newtree.txt | git mk-tree
+5bac6559179bd543a024d6d187692343e2d8ae83
+</code></pre>
+
+<p>И мы теперь имеем искуственную структуру директорий в Git, которая выглядит следующим образом:</p>
+
+<pre><code>.
+|-- file1-copy
+`-- our_files
+    |-- file1
+    `-- file2
+
+1 directory, 3 files
+</code></pre>
+
+<p>причем это структура никогда в действительности не существовала на диске. Плюс, у нас есть SHA (<code>5bac6559</code>) которое указывает на нее.</p>
+
+<h3>Перестроить деревья</h3>
+
+<p>Мы также можем проделать манипуляции с объединением деревьев в новую структуру используя файл индекс. Как простейший пример, давайте возьмем дерево которое мы только что создали и сделаем новое дерево которое имеет две копии нашего <code>5bac6559</code> дерева в нем используя временный файл индекс. (Вы можете проделать это сбросив переменную окружения GIT_INDEX_FILE или в командной строке)</p>
+
+<p>Первое, мы читаем дерево в наш индекс файл под новым префиксом используя команду <a href="http://www.kernel.org/pub/software/scm/git/docs/git-read-tree.html">git read-tree</a>, и затем запишем содержимое индекса как дерево используя команду <a href="http://www.kernel.org/pub/software/scm/git/docs/git-write-tree.html">git write-tree</a>:</p>
+
+<pre><code>$ export GIT_INDEX_FILE=/tmp/index
+$ git read-tree --prefix=copy1/  5bac6559
+$ git read-tree --prefix=copy2/  5bac6559
+$ git write-tree 
+bb2fa6de7625322322382215d9ea78cfe76508c1
+
+$&gt;git ls-tree bb2fa
+040000 tree 5bac6559179bd543a024d6d187692343e2d8ae83    copy1
+040000 tree 5bac6559179bd543a024d6d187692343e2d8ae83    copy2
+</code></pre>
+
+<p>Теперь мы видим что мы создали новое дерево просто манипулируя индексом. Вы также можете делать интересные операции слияния и тому подобное во временном индексе. Просмотрите документацию <a href="http://www.kernel.org/pub/software/scm/git/docs/git-read-tree.html">git read-tree</a> чтобы получить больше подробностей.</p>
+
+<h3>Создание коммитов</h3>
+
+<p>Теперь когда у нас есть SHA дерева, мы можем создать объект коммит которое на него указывает. Мы можем проделать это используя команду <a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit-tree.html">git commit-tree</a>. Больщинство данных которые потом войдут в коммит должны быть установленны как переменные окружения, так что вам потребуется установить их:</p>
+
+<pre><code>GIT_AUTHOR_NAME
+GIT_AUTHOR_EMAIL
+GIT_AUTHOR_DATE
+GIT_COMMITTER_NAME
+GIT_COMMITTER_EMAIL
+GIT_COMMITTER_DATE
+</code></pre>
+
+<p>Затем вам потребуется записать ваше сообщение-описание коммита в файл или каким либо образом передать эту информацию в команду через STDIN. Затем, вы можете создать ваш коммит основываясь на sha дерева которое есть нас.</p>
+
+<pre><code>$ git commit-tree bb2fa &lt; /tmp/message
+a5f85ba5875917319471dfd98dfc636c1dc65650
+</code></pre>
+
+<p>Если вы хотите определить один или более родителей коммита, просто добавьте sha значения в командную строку вместе с параметром '-p' перед каждым из них. SHA нового объекта коммита будет выведено как результат работы команды..</p>
+
+<h3>Обновление ссылки ветки</h3>
+
+<p>Теперь у нас есть SHA значение нового объекта коммит, и мы можем обновить ветку чтобы она указывала него если мы так хотим. Давайте скажем что мы хотим обновить нашу ветку 'master' так чтобы она указывала на новый коммит который мы только что создали - мы используем команду <a href="http://www.kernel.org/pub/software/scm/git/docs/git-update-ref.html">git update-ref</a> для этого:</p>
+
+<pre><code>$ git update-ref refs/heads/master a5f85ba5875917319471dfd98dfc636c1dc65650
+</code></pre>
+
+
+  </div>
+  
+  <div class="span-21">
+    <hr/>
+    <div class="center"><a href="7_Пакфайлы.html">Prev</a>  <a href="7_Протоколы_передачи.html">Next</a></div>
+    <hr/>
+  </div>
+  
+  <div class="span-17 footer">
+  	<div class="menu">
+  		This book is maintained by Scott Chacon, and hosting is donated by GitHub.
+  		<br>
+  		Please email me at <a href="mailto:schacon@gmail.com">schacon@gmail.com</a>
+  		with patches, suggestions and comments.
+	  </div>
+  </div>
+  <div class="span-4 last center">
+    <a href="http://github.com"><img src="assets/images/github.png" alt="github logo"></a>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-82337-12");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<script src="http://static.getclicky.com/40584.js" type="text/javascript"></script>
+<noscript><p><img alt="Clicky" src="http://in.getclicky.com/40584-db6.gif" /></p></noscript>
+
+</body>
+</html>

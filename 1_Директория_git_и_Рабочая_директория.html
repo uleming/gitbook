@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>Git Book - Директория Git и Рабочая директория</title>
+	<meta http-equiv="content-language" content="en">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.png" type="image/png">
+	<link rel="stylesheet" href="assets/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="assets/blueprint/print.css" type="text/css" media="print">
+  <!--[if IE]><link rel="stylesheet" href="assets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/stylesheets/mac_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/stylesheets/style.css" type="text/css" media="screen, projection">
+</head>
+
+<body>
+<div class="container chapter showgrids">
+
+  <div class="span-21 header">
+    <div class="nav"><a href="1_Объектная_модель_git.html">Prev</a>  <a href="1_Индекс_git.html">Next</a></div>
+    <div class="title"><a href='index.html'>Git Community Book</a></div>
+  </div>
+  
+  <div class="span-21">
+    <br/>
+  </div>
+  
+  <div class="span-21">
+    <h2>Директория Git и Рабочая директория</h2>
+
+<h3>Директория Git</h3>
+
+<p>'Директория git' это директория в которой хранится вся история Git и мета-информация вашего проекта - включая все объекты (коммиты, деревья, блобы, таги), все указатели на различные ветви и многое другое.</p>
+
+<p>На каждый проект имеется только одна директория Git (в отличие SVN или CVS, где она в каждой поддиректории), и это директория (по умолчанию но не обязадельно) '.git' в корне вашего проекта. Если вы посмотрите на содержимое этой директории то увидите все ваши важные файлы:</p>
+
+<pre><code>$&gt;tree -L 1
+.
+|-- HEAD         # указатель на вашу активную ветку
+|-- config       # ваши персональные настройки
+|-- description  # описание проекта
+|-- hooks/       # pre/post action hooks (скрипты (далее хуки) которые могут вызываться git командами)
+|-- index        # индексный файл (смотрите в след.главе)
+|-- logs/        # история веток проекта (где они располагались)
+|-- objects/     # ваши объекты (коммиты, деревья, блобы, таги)
+`-- refs/        # указатели на ваши ветки разработки
+</code></pre>
+
+<p>(Также там могут быть и другие файлы/директории, но они не так важны в данный момент)</p>
+
+<h3>Рабочая директория</h3>
+
+<p>'Рабочая директория' Git это директория которая содержит в себе то с чем вы работаете или то что вы извлекли из истории проекта в данный момент. Файлы в этой директории часто удаляются или изменяются Git-ом когда вы переключаетесь между ветками - не переживайте это нормально. Вся история вашего проекта хранится в директории Git; рабочая директория это просто временное место где вы можете модифицировать файлы, а затем выполнить коммит.</p>
+
+<p>Замечания:
+Коммит это фиксация изменений в истории проекта</p>
+
+
+  </div>
+  
+  <div class="span-21">
+    <hr/>
+    <div class="center"><a href="1_Объектная_модель_git.html">Prev</a>  <a href="1_Индекс_git.html">Next</a></div>
+    <hr/>
+  </div>
+  
+  <div class="span-17 footer">
+  	<div class="menu">
+  		This book is maintained by Scott Chacon, and hosting is donated by GitHub.
+  		<br>
+  		Please email me at <a href="mailto:schacon@gmail.com">schacon@gmail.com</a>
+  		with patches, suggestions and comments.
+	  </div>
+  </div>
+  <div class="span-4 last center">
+    <a href="http://github.com"><img src="assets/images/github.png" alt="github logo"></a>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-82337-12");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<script src="http://static.getclicky.com/40584.js" type="text/javascript"></script>
+<noscript><p><img alt="Clicky" src="http://in.getclicky.com/40584-db6.gif" /></p></noscript>
+
+</body>
+</html>
